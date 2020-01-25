@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="?attr/listPreferredItemHeight"
+    android:orientation="vertical"
+    android:paddingBottom="8dp"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:background="@color/accent_color"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="8dp">
+
+
+    <ImageView
+        android:id="@+id/petPhoto"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_below="@+id/demo"
+        android:layout_marginLeft="191dp"
+        android:layout_marginTop="9dp"
+        android:background="@drawable/logo"
+        android:text="Compañía"
+        android:textColor="@color/texto"
+        tools:text="" />
+
+
+
+
+    <TextView
+        android:id="@+id/petInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop= "35dp"
+        android:text="Cuenta: "
+        android:textColor="@color/textColor"/>
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:background="@drawable/barra"
+        android:layout_height="4dp"
+        android:id="@+id/demo"
+        android:layout_alignLeft="@+id/desc_prod"
+        android:layout_below="@+id/petName1"/>
+
+
+
+
+
+    <TextView
+        android:id="@+id/petName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Moneda: "
+        android:layout_below="@+id/petInfo"
+        android:layout_alignStart="@+id/petInfo"
+        android:textColor="@color/textColor"/>
+
+    <TextView
+        android:id="@+id/petName1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:text="Pedidos Pendientes"
+        android:textAppearance="?attr/textAppearanceListItem"
+        tools:text="Pedidos Pendientes"
+        android:textColor="@color/titulo"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/petInfo" />
+
+    <TextView
+        android:id="@+id/petName2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Evaluando Solucion"
+        android:layout_below="@+id/petName"
+        android:layout_alignStart="@+id/petName"
+        android:textColor="@color/evaluacion"/>
+    <TextView
+        android:id="@+id/petName3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Local:Doctor Verde Pedro"
+        android:layout_below="@+id/petName2"
+        android:layout_alignStart="@+id/petName2"
+        android:textColor="@color/icons"/>
+
+</RelativeLayout>
