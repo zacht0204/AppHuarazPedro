@@ -4,6 +4,7 @@ package com.huaraz.luis.apphuaraz.Servicio;
 
 import com.huaraz.luis.apphuaraz.Model.Demo;
 import com.huaraz.luis.apphuaraz.Model.Districts;
+import com.huaraz.luis.apphuaraz.Model.Pedido;
 import com.huaraz.luis.apphuaraz.Model.Pet;
 import com.huaraz.luis.apphuaraz.Model.PetLost;
 import com.huaraz.luis.apphuaraz.Model.Search;
@@ -50,6 +51,24 @@ public interface APIService {
                       @Field("id_provincia") String id_provincia);
 
    //////////////////////////////////
+   //Registro de Pedido
+   @FormUrlEncoded
+   @POST("pedido.php")
+   Call<Pedido> addPedido(@Field("foto_01") String foto_01,
+                          @Field("foto_02") String foto_02,
+                          @Field("foto_03") String foto_03,
+                          @Field("provincia") String provincia,
+                          @Field("distrito") String distrito,
+                          @Field("id_usuario") int id_usuario,
+                          @Field("id_tecnico") int 	id_tecnico,
+                          @Field("fecha") String fecha,
+                          @Field("estado") int estado,
+                          @Field("altitud") String altitud,
+                          @Field("latitud") String latitud,
+                          @Field("temperatura") String temperatura);
+
+   ///
+
 
    @POST("post.php")
    @FormUrlEncoded

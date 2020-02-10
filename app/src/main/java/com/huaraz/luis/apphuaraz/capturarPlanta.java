@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioGroup;
@@ -29,17 +28,20 @@ import android.widget.Toast;
 
 import com.huaraz.luis.apphuaraz.Model.Districts;
 import com.huaraz.luis.apphuaraz.Model.Demo;
+import com.huaraz.luis.apphuaraz.Model.Pedido;
 import com.huaraz.luis.apphuaraz.Model.UserResponse;
+import com.huaraz.luis.apphuaraz.Model.Usuario;
 import com.huaraz.luis.apphuaraz.Servicio.APIService;
 import com.huaraz.luis.apphuaraz.Servicio.ApiUtils;
 import com.huaraz.luis.apphuaraz.Servicio.Conectividad;
 import com.huaraz.luis.apphuaraz.Servicio.ValidationUtils;
-import com.huaraz.luis.apphuaraz.Sql.Pedido;
 import com.huaraz.luis.apphuaraz.Sql.PedidosDbHelper;
+
 import com.huaraz.luis.apphuaraz.alarm.MyBroadcastReceiver;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +74,7 @@ public class capturarPlanta extends Fragment {
     public String Distrito;
     public  String Ciudad;
     TextView nombrePerfil;
+    String dateString="";
 
     int c=0;
     private NavigationView navView;
@@ -80,6 +83,8 @@ public class capturarPlanta extends Fragment {
     List<Districts> itemsDistritos = new ArrayList<>();
 
     ListView lv;
+    int usuario;
+
     public capturarPlanta() {
 
     }
@@ -93,8 +98,14 @@ public class capturarPlanta extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_info, container, false);
+        final View root = inflater.inflate(R.layout.fragment_info, container, false);
 
+
+        usuario=Integer.parseInt(Global.usuario);
+
+        long date = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/d HH:mm:ss ");
+         dateString = sdf.format(date);
 
         //Datos para agregar la informacion
      //   spnDistrict = (Spinner) root.findViewById(R.id.spnDistrict);
@@ -134,9 +145,18 @@ public class capturarPlanta extends Fragment {
 
                 if (!ValidationUtils.isEmpty(tilFullname, tilSurname)) {
                     addFoto();
-                    Toast.makeText(getActivity(),"Se Capturo la Planta,por favor Espere..",Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getActivity(),"Un Tecnico Se Estara Comunicando con Usted ",Toast.LENGTH_SHORT).show();
 
+                    Toast toast = new Toast(getContext());
+
+                    LayoutInflater inflater = getLayoutInflater();
+                    View layout = inflater.inflate(R.layout.toast_layout, (ViewGroup) root.findViewById((R.id.lytLayout)));
+
+                    TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
+                    txtMsg.setText("¡Se registro su pedido ☻! Un tecnico se comunicara lo mas pronto posible!");
+
+                    toast.setDuration(Toast.LENGTH_LONG);
+                    toast.setView(layout);
+                    toast.show();
 
                     Intent i = new Intent(getContext(), MainActivity.class);
                     startActivity(i);
@@ -239,6 +259,31 @@ public class capturarPlanta extends Fragment {
 
         if(Conectividad.isOnline(getActivity().getApplicationContext())){
 
+            //Metodo Actualizado
+            mAPIService.addPedido(petPhoto64,petPhoto642,petPhoto643,distri,provincia,1 ,1,dateString,1,"2","2","2").enqueue(new Callback<Pedido>() {
+                @Override
+                public void onResponse(Call<Pedido> call, Response<Pedido> response) {
+
+                    if(response.isSuccessful()) {
+                        System.out.println("Se envio registro");
+
+                    }else {
+                        int statusCode  = response.code();
+                        System.out.println("estado de error"+statusCode);
+                        // handle request errors depending on status code
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<Pedido> call, Throwable t) {
+
+                }
+            });
+
+            //////////////
+
+            /*
             mAPIService.addFoto(petPhoto64,petPhoto642,petPhoto643,distri,provincia).enqueue(new Callback<Demo>() {
                 @Override
                 public void onResponse(Call<Demo> call, Response<Demo> response) {
@@ -268,16 +313,16 @@ public class capturarPlanta extends Fragment {
                         // todo log to some central bug tracking service
                     }
                 }
-            });
+            }); */
 
         }else{
 
             System.out.println("no tiene internet");
-            Pedido lawyer = new Pedido("",petPhoto64, petPhoto642, petPhoto643, distri,provincia,"1","1","","s","","","");
+            com.huaraz.luis.apphuaraz.Sql.Pedido lawyer = new com.huaraz.luis.apphuaraz.Sql.Pedido("",petPhoto64, petPhoto642, petPhoto643, distri,provincia,"1","1","","S","","","");
 
             System.out.println("no tiene internet2");
             new AddEditLawyerTask().execute(lawyer);
-            startAlert(20);
+            startAlert(25);
             //activar alarma
 
 
@@ -287,10 +332,10 @@ public class capturarPlanta extends Fragment {
 
     }
 
-    private class AddEditLawyerTask extends AsyncTask<Pedido, Void, Boolean> {
+    private class AddEditLawyerTask extends AsyncTask<com.huaraz.luis.apphuaraz.Sql.Pedido, Void, Boolean> {
 
         @Override
-        protected Boolean doInBackground(Pedido... pedidos) {
+        protected Boolean doInBackground(com.huaraz.luis.apphuaraz.Sql.Pedido... pedidos) {
 
 
             System.out.println("registro de plantas");

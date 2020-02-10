@@ -22,6 +22,7 @@ import com.huaraz.luis.apphuaraz.Servicio.APIService;
 import com.huaraz.luis.apphuaraz.Servicio.ApiUtils;
 import com.huaraz.luis.apphuaraz.Servicio.Peticion;
 
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,6 +40,9 @@ public class loginPet extends AppCompatActivity {
     FragmentManager fragmentManager = getSupportFragmentManager();
     private String contrasena;
     Usuario per = new Usuario();
+
+    //Datos de usuario
+
 
     public static  int id_user=0;
     public  static String correo_user=null;
@@ -229,9 +233,14 @@ public class loginPet extends AppCompatActivity {
                         per.setApellidos(response.body().getApellidos());
                         per.setDni(response.body().getDni());
                         per.setContrasena(response.body().getContrasena());
+
                         System.out.println("demo ++");
 
                         if(per.getContrasena().equals(contrasena)){
+
+
+                            Global.usuario=(String.valueOf(per.getId_usuario()));
+
 
                             Toast toast = new Toast(getApplicationContext());
 

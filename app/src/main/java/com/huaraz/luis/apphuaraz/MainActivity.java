@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+
+
 public class MainActivity extends AppCompatActivity {
 
     private Toolbar appbar;
@@ -21,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navView;
     String  nombres=null;
     TextView nombrePerfil;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+
 
          /*
         Intent intent=getIntent();
