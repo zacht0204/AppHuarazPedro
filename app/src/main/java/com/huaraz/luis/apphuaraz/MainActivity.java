@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         appbar = (Toolbar)findViewById(R.id.appbar);
         setSupportActionBar(appbar);
 
+
         //Inicio de menu de Inicio
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame,new Inicio()).commit();
@@ -40,11 +41,13 @@ public class MainActivity extends AppCompatActivity {
 
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
 
+         /*
         Intent intent=getIntent();
         Bundle extras =intent.getExtras();
         nombres= (String) extras.get("nombre");
         String[] parts = nombres.split(" ");
         nombres=parts[0];
+        */
 
 
 
@@ -106,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                                 fragmentTransaction = true;
                                 break;
                             case R.id.menu_seccion_5:
-                                fragment = new ShopPet();
+                                fragment = new MisPedidosOff();
                                 fragmentTransaction = true;
                                 break;
                             case R.id.menu_seccion_6:
@@ -130,10 +133,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-
+/*
         View header = navView.getHeaderView(0);
         nombrePerfil = (TextView) header.findViewById(R.id.personalista);
-        nombrePerfil.setText(" Hola :"+nombres.toUpperCase().toString()+" ☺");
+        nombrePerfil.setText(" Hola :"+nombres.toUpperCase().toString()+" ☺");*/
     }
 
     @Override

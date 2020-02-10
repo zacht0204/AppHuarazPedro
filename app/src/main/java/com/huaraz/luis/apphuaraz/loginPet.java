@@ -248,7 +248,7 @@ public class loginPet extends AppCompatActivity {
                             System.out.println("Bienvenido"+per.getNombres()+per.getApellidos());
 
                             Intent in = new Intent(loginPet.this,MainActivity.class);
-                            in.putExtra("nombre",per.getNombres());
+                          //  in.putExtra("nombre",per.getNombres());
 
                             startActivity(in);
 

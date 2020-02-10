@@ -1,10 +1,16 @@
 package com.huaraz.luis.apphuaraz;
 
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
@@ -13,10 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.huaraz.luis.apphuaraz.Model.Districts;
@@ -24,9 +32,14 @@ import com.huaraz.luis.apphuaraz.Model.Demo;
 import com.huaraz.luis.apphuaraz.Model.UserResponse;
 import com.huaraz.luis.apphuaraz.Servicio.APIService;
 import com.huaraz.luis.apphuaraz.Servicio.ApiUtils;
+import com.huaraz.luis.apphuaraz.Servicio.Conectividad;
 import com.huaraz.luis.apphuaraz.Servicio.ValidationUtils;
+import com.huaraz.luis.apphuaraz.Sql.Pedido;
+import com.huaraz.luis.apphuaraz.Sql.PedidosDbHelper;
+import com.huaraz.luis.apphuaraz.alarm.MyBroadcastReceiver;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,12 +56,14 @@ public class capturarPlanta extends Fragment {
     private ImageView imgOwnerPhoto;
     private ImageView imgOwnerPhoto2;
     private ImageView imgOwnerPhoto3;
+    private Conectividad conectividad;
     //TextView txvEmail;
     private TextInputLayout tilFullname, tilSurname;
     //, tilAddress,tilCiudad;
     private RadioGroup rbgSex;
     private Spinner spnDistrict;
     private Button boton_registrar_planta;
+    private PedidosDbHelper PedidosDbHelper;
    // private FloatingActionButton fabSaveMyInfo;
     //ProfileApapter profile;
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -56,15 +71,17 @@ public class capturarPlanta extends Fragment {
 
     public String Distrito;
     public  String Ciudad;
+    TextView nombrePerfil;
 
     int c=0;
+    private NavigationView navView;
 
 
     List<Districts> itemsDistritos = new ArrayList<>();
 
     ListView lv;
     public capturarPlanta() {
-        // Required empty public constructor
+
     }
 
     @Override
@@ -89,6 +106,8 @@ public class capturarPlanta extends Fragment {
         tilSurname = (TextInputLayout) root.findViewById(R.id.tilSurname); /// Ciudad
 
         boton_registrar_planta = (Button) root.findViewById(R.id.boton_registrar_planta);
+
+        PedidosDbHelper = new PedidosDbHelper(getActivity());
 
         // tilAddress = (TextInputLayout) root.findViewById(R.id.tilAddress);
 
@@ -215,31 +234,102 @@ public class capturarPlanta extends Fragment {
         Demo demo = new Demo();
 
 
-        System.out.println("ingreso 1");
-       // friendsList.add(fotito);
-        mAPIService.addFoto(petPhoto64,petPhoto642,petPhoto643,distri,provincia).enqueue(new Callback<Demo>() {
-            @Override
-            public void onResponse(Call<Demo> call, Response<Demo> response) {
 
 
-                if(response.isSuccessful()) {
-                    System.out.println("valor de ingreso");
 
-                }else {
-                    int statusCode  = response.code();
-                    System.out.println("2"+statusCode);
-                    // handle request errors depending on status code
+        if(Conectividad.isOnline(getActivity().getApplicationContext())){
+
+            mAPIService.addFoto(petPhoto64,petPhoto642,petPhoto643,distri,provincia).enqueue(new Callback<Demo>() {
+                @Override
+                public void onResponse(Call<Demo> call, Response<Demo> response) {
+
+
+                    if(response.isSuccessful()) {
+                        System.out.println("salio");
+
+                    }else {
+                        int statusCode  = response.code();
+                        System.out.println("no internet1"+statusCode);
+                        // handle request errors depending on status code
+                    }
+
                 }
 
-            }
+                @Override
+                public void onFailure(Call<Demo> call, Throwable t) {
 
-            @Override
-            public void onFailure(Call<Demo> call, Throwable t) {
+                    System.out.println("conversion issuallallalallae! big problem+"+ t.getMessage());
+                    if (t instanceof IOException) {
+                        System.out.println("conversion issuallallalallae! big problem");
+                        // logging probably not necessary
+                    }
+                    else {
 
-            }
-        });
+                        // todo log to some central bug tracking service
+                    }
+                }
+            });
+
+        }else{
+
+            System.out.println("no tiene internet");
+            Pedido lawyer = new Pedido("",petPhoto64, petPhoto642, petPhoto643, distri,provincia,"1","1","","s","","","");
+
+            System.out.println("no tiene internet2");
+            new AddEditLawyerTask().execute(lawyer);
+            startAlert(20);
+            //activar alarma
 
 
+        }
+       // friendsList.add(fotito);
+
+
+    }
+
+    private class AddEditLawyerTask extends AsyncTask<Pedido, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Pedido... pedidos) {
+
+
+            System.out.println("registro de plantas");
+                return PedidosDbHelper.saveLawyer(pedidos[0]) > 0;
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            showPedidosScreen(result);
+        }
+
+    }
+
+    private void showPedidosScreen(Boolean requery) {
+        if (!requery) {
+            showAddEditError();
+            getActivity().setResult(Activity.RESULT_CANCELED);
+        } else {
+            getActivity().setResult(Activity.RESULT_OK);
+        }
+
+        getActivity().finish();
+    }
+    private void showAddEditError() {
+        Toast.makeText(getActivity(),
+                "Error al agregar nueva información", Toast.LENGTH_SHORT).show();
+    }
+
+    public void startAlert(int i) {
+
+
+        Intent intent = new Intent(getActivity().getApplicationContext(), MyBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                getActivity().getApplicationContext(), 234324243, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
+                + (i * 1000), pendingIntent);
+        Toast.makeText(getActivity().getApplicationContext(), "Alarm activada " + i + " seconds",Toast.LENGTH_LONG).show();
     }
 
     public void addFoto1(){
