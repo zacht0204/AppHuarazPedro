@@ -228,7 +228,7 @@ public class loginPet extends AppCompatActivity {
                 public void onResponse(Call<Usuario> call, Response<Usuario> response) {
 
                     if(response.isSuccessful()) {
-
+                        per.setId_usuario(response.body().getId_usuario());
                         per.setNombres(response.body().getNombres());
                         per.setApellidos(response.body().getApellidos());
                         per.setDni(response.body().getDni());
@@ -240,6 +240,7 @@ public class loginPet extends AppCompatActivity {
 
 
                             Global.usuario=(String.valueOf(per.getId_usuario()));
+                            System.out.println("Global"+Global.usuario);
 
 
                             Toast toast = new Toast(getApplicationContext());

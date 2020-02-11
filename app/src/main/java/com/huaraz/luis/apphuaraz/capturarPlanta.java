@@ -102,6 +102,9 @@ public class capturarPlanta extends Fragment {
 
 
         usuario=Integer.parseInt(Global.usuario);
+        System.out.println("Global"+usuario);
+
+        
 
         long date = System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/d HH:mm:ss ");
@@ -260,7 +263,7 @@ public class capturarPlanta extends Fragment {
         if(Conectividad.isOnline(getActivity().getApplicationContext())){
 
             //Metodo Actualizado
-            mAPIService.addPedido(petPhoto64,petPhoto642,petPhoto643,distri,provincia,1 ,1,dateString,1,"2","2","2").enqueue(new Callback<Pedido>() {
+            mAPIService.addPedido(petPhoto64,petPhoto642,petPhoto643,distri,provincia,usuario,0,dateString,1,"2","2","2").enqueue(new Callback<Pedido>() {
                 @Override
                 public void onResponse(Call<Pedido> call, Response<Pedido> response) {
 
