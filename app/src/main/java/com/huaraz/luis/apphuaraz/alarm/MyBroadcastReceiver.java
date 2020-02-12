@@ -6,8 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.huaraz.luis.apphuaraz.Adaptador.StoreAdapter;
@@ -15,11 +19,15 @@ import com.huaraz.luis.apphuaraz.Global;
 import com.huaraz.luis.apphuaraz.MisPedidosOff;
 import com.huaraz.luis.apphuaraz.Model.Demo;
 import com.huaraz.luis.apphuaraz.Model.Pedido;
+import com.huaraz.luis.apphuaraz.Model.Usuario;
+import com.huaraz.luis.apphuaraz.R;
 import com.huaraz.luis.apphuaraz.Servicio.APIService;
 import com.huaraz.luis.apphuaraz.Servicio.ApiUtils;
 import com.huaraz.luis.apphuaraz.Sql.PedidosDbHelper;
 import com.huaraz.luis.apphuaraz.Sql.UsuariosDbHelper;
 import com.huaraz.luis.apphuaraz.Sql.UsuariosDbHelper;
+import com.huaraz.luis.apphuaraz.loginPet;
+import com.huaraz.luis.apphuaraz.registro_usuario;
 
 import java.io.IOException;
 
@@ -42,6 +50,10 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
      //   Toast.makeText(context, "Se activo alarma....", Toast.LENGTH_LONG).show();
 
+        UsuariosDbHelper = new UsuariosDbHelper(context.getApplicationContext());
+        usuarioLawyers();
+        /*
+
         if(Global.conexion.equals("3")){
 
             System.out.println("alarma usuario 33333");
@@ -58,6 +70,8 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
             loadLawyers();
 
         }
+
+        */
 
    //     Toast.makeText(context, "Se termino de enviar....", Toast.LENGTH_LONG).show();
 
@@ -139,6 +153,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 
     private class UserLoadTask extends AsyncTask<Void, Void, Cursor> {
 
+
         @Override
         protected Cursor doInBackground(Void... voids) {
 
@@ -153,7 +168,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
                     //Recorremos el cursor hasta que no haya más registros
                     do {
 
-                        enviarInformacion( cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getInt(7),cursor.getString(9));
+                        enviarUsuario(cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8));
 
                     } while(cursor.moveToNext());
 
@@ -170,5 +185,33 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
+
+    public void enviarUsuario(String string, String nombres, String apellidos, String dni, String contrasena, String correo, String telefono){
+
+        mAPIService.addUsuario(nombres,apellidos,dni,contrasena,correo,telefono,3).enqueue(new Callback<Usuario>() {
+            @Override
+            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+
+                if(response.isSuccessful()) {
+
+
+
+
+
+
+                }else {
+                    int statusCode  = response.code();
+                    System.out.println("2"+statusCode);
+                    // handle request errors depending on status code
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Usuario> call, Throwable t) {
+
+            }
+        });
+    }
 
 }

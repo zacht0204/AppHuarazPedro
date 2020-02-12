@@ -244,8 +244,8 @@ public class registro_usuario extends AppCompatActivity {
     public void startAlertUsuario(int i) {
 
 
-        int interval = 1000*60*60*2;
-       // int interval = 1000*25;
+      //  int interval = 1000*60*60*2;
+        int interval = 1000*25;
 
         Intent intent = new Intent(this, MyBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
