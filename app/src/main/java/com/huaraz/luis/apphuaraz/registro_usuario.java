@@ -16,9 +16,11 @@ import com.huaraz.luis.apphuaraz.Model.UserResponse;
 import com.huaraz.luis.apphuaraz.Model.Usuario;
 import com.huaraz.luis.apphuaraz.Servicio.APIService;
 import com.huaraz.luis.apphuaraz.Servicio.ApiUtils;
+import com.huaraz.luis.apphuaraz.Servicio.Conectividad;
 import com.huaraz.luis.apphuaraz.Servicio.Peticion;
 import com.huaraz.luis.apphuaraz.Servicio.User;
 import com.huaraz.luis.apphuaraz.Servicio.ValidationUtils;
+import com.huaraz.luis.apphuaraz.Sql.UsuariosDbHelper;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,6 +32,7 @@ public class registro_usuario extends AppCompatActivity {
     private APIService mAPIService;
     private Toolbar toolbar;
     Button btnRegistrar;
+    private UsuariosDbHelper UsuariosDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,8 @@ public class registro_usuario extends AppCompatActivity {
         id_telefono = (TextInputLayout) findViewById(R.id.id_telefono);
         btnRegistrar = (Button) findViewById(R.id.btnRegistrar);
 
+
+        UsuariosDbHelper = new UsuariosDbHelper(getApplicationContext());
         //Configuracion de la barra de titulo
         toolbar = (Toolbar) findViewById(R.id.activity_my_toolbar);
         setSupportActionBar(toolbar);
@@ -115,9 +120,11 @@ public class registro_usuario extends AppCompatActivity {
 
             System.out.println("entreo" +pass+passConfirm);
 
+            if(Conectividad.isOnline(getApplicationContext().getApplicationContext())){
+
             // mAPIService.addUsuario
             //Registro de usuario de tecnico
-            mAPIService.addUsuario(nombres,apellidos,dni,contrasena,correo,telefono,2).enqueue(new Callback<Usuario>() {
+            mAPIService.addUsuario(nombres,apellidos,dni,contrasena,correo,telefono,1).enqueue(new Callback<Usuario>() {
                 @Override
                 public void onResponse(Call<Usuario> call, Response<Usuario> response) {
 
@@ -159,7 +166,10 @@ public class registro_usuario extends AppCompatActivity {
                 }
             });
 
+            }else{
 
+
+            }
         }
     }
 }
