@@ -19,7 +19,7 @@
         android:layout_below="@+id/demo"
         android:layout_marginLeft="191dp"
         android:layout_marginTop="9dp"
-        android:background="@drawable/logo"
+        android:background="@drawable/evaluando03"
         android:text="Compañía"
         android:textColor="@color/texto"
         tools:text="" />
@@ -33,8 +33,26 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginTop= "35dp"
-        android:text="Cuenta: "
+        android:text="Provincia: "
         android:textColor="@color/textColor"/>
+
+    <TextView
+        android:id="@+id/provincia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="68dp"
+        android:layout_marginTop= "35dp"
+        android:textColor="@color/texto"
+        android:text="huaraza" />
+
+    <TextView
+        android:id="@+id/distrito"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/provincia"
+        android:layout_alignStart="@+id/provincia"
+        android:textColor="@color/texto"
+        android:text="Lima" />
 
 
     <ImageView
@@ -53,7 +71,7 @@
         android:id="@+id/petName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Moneda: "
+        android:text="Distrito: "
         android:layout_below="@+id/petInfo"
         android:layout_alignStart="@+id/petInfo"
         android:textColor="@color/textColor"/>
@@ -63,9 +81,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="0dp"
-        android:text="Pedidos Pendientes"
+        android:text="Mis pedidos Registrados"
         android:textAppearance="?attr/textAppearanceListItem"
-        tools:text="Pedidos Pendientes"
+        tools:text="Mis pedidos Registrados"
         android:textColor="@color/titulo"
         android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/petInfo" />
@@ -74,17 +92,33 @@
         android:id="@+id/petName2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Evaluando Solucion"
+        android:text="Estado del Pedido:"
         android:layout_below="@+id/petName"
         android:layout_alignStart="@+id/petName"
-        android:textColor="@color/evaluacion"/>
+        android:textColor="@color/color_accent"/>
     <TextView
-        android:id="@+id/petName3"
+        android:id="@+id/estadoP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Local:Doctor Verde Pedro"
+        android:text="Pendiente"
         android:layout_below="@+id/petName2"
         android:layout_alignStart="@+id/petName2"
-        android:textColor="@color/icons"/>
+        android:textColor="@color/estado"/>
+    <TextView
+        android:id="@+id/petName4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fecha del Pedido:"
+        android:layout_below="@+id/estadoP"
+        android:layout_alignStart="@+id/estadoP"
+        android:textColor="@color/color_accent"/>
+    <TextView
+        android:id="@+id/fechaP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="14/14/208"
+        android:layout_below="@+id/petName4"
+        android:layout_alignStart="@+id/petName4"
+        android:textColor="@color/texto"/>
 
 </RelativeLayout>

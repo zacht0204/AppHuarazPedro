@@ -240,6 +240,7 @@ public class loginPet extends AppCompatActivity {
 
 
                             Global.usuario=(String.valueOf(per.getId_usuario()));
+                            Global.nombre=per.getNombres();
                             System.out.println("Global"+Global.usuario);
 
 

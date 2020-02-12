@@ -10,7 +10,8 @@
     <color name="login">#00E676</color>
     <color name="icons">#00E676</color>
     <color name="accent_color">#FFFFFF</color>
-    <color name="evaluacion">#03A9F4</color>
+    <color name="evaluacion">#03A9F4</color>2196F3
+    <color name="estado">#03A9F4</color>
 
     <!--Colores temporrales-->
     <color name="hintInfo">#FF8A65</color>

@@ -5,22 +5,23 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static com.huaraz.luis.apphuaraz.Sql.PedidosContract.PedidoEntry;
 import static com.huaraz.luis.apphuaraz.Sql.UsuarioContract.UsuarioEntry;
 
 /**
  * Manejador de la base de datos
  */
-public class PedidosDbHelper extends SQLiteOpenHelper {
+public class UsuariosDbHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "Pedido.db";
+    public static final String DATABASE_NAME = "Usuario.db";
 
-    public PedidosDbHelper(Context context) {
+    public UsuariosDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
+        /*
 
         db.execSQL("CREATE TABLE " + PedidoEntry.TABLE_NAME + " ("
                 + PedidoEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -38,7 +39,8 @@ public class PedidosDbHelper extends SQLiteOpenHelper {
                 + PedidoEntry.latitud + " TEXT,"
                 + PedidoEntry.	temperatura + " TEXT,"
                 + "UNIQUE (" + PedidoEntry.ID + "))");
-/*
+        */
+
 
         db.execSQL("CREATE TABLE " + UsuarioEntry.TABLE_NAME + " ("
                 + UsuarioEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -52,7 +54,7 @@ public class PedidosDbHelper extends SQLiteOpenHelper {
                 + UsuarioEntry.tipo + " INTEGER ,"
                 + "UNIQUE (" + UsuarioEntry.ID + "))");
 
-        */
+
 
 
         // Insertar datos ficticios para prueba inicial
@@ -64,7 +66,7 @@ public class PedidosDbHelper extends SQLiteOpenHelper {
 
     public long mockPedido(SQLiteDatabase db, Pedido pedido) {
         return db.insert(
-                PedidoEntry.TABLE_NAME,
+                UsuarioEntry.TABLE_NAME,
                 null,
                 pedido.toContentValues());
     }
@@ -78,7 +80,7 @@ public class PedidosDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
         return sqLiteDatabase.insert(
-                PedidoEntry.TABLE_NAME,
+                UsuarioEntry.TABLE_NAME,
                 null,
                 pedido.toContentValues());
 
@@ -87,7 +89,7 @@ public class PedidosDbHelper extends SQLiteOpenHelper {
     public Cursor getAllLawyers() {
         return getReadableDatabase()
                 .query(
-                        PedidoEntry.TABLE_NAME,
+                        UsuarioEntry.TABLE_NAME,
                         null,
                         null,
                         null,
@@ -98,7 +100,7 @@ public class PedidosDbHelper extends SQLiteOpenHelper {
 
     public Cursor getPedidosos() {
         Cursor c = getReadableDatabase().query(
-                PedidoEntry.TABLE_NAME,
+                UsuarioEntry.TABLE_NAME,
                 null,
                 null,
                 null,
@@ -110,9 +112,9 @@ public class PedidosDbHelper extends SQLiteOpenHelper {
 
     public Cursor getLawyerById(String lawyerId) {
         Cursor c = getReadableDatabase().query(
-                PedidoEntry.TABLE_NAME,
+                UsuarioEntry.TABLE_NAME,
                 null,
-                PedidoEntry.ID + " LIKE ?",
+                UsuarioEntry.ID + " LIKE ?",
                 new String[]{lawyerId},
                 null,
                 null,
@@ -122,16 +124,16 @@ public class PedidosDbHelper extends SQLiteOpenHelper {
 
     public int deletePedidos() {
         return getWritableDatabase().delete(
-                PedidoEntry.TABLE_NAME,
+                UsuarioEntry.TABLE_NAME,
                 null,
                 null);
     }
 
     public int updateLawyer(Pedido pedido, String lawyerId) {
         return getWritableDatabase().update(
-                PedidoEntry.TABLE_NAME,
+                UsuarioEntry.TABLE_NAME,
                 pedido.toContentValues(),
-                PedidoEntry.ID + " LIKE ?",
+                UsuarioEntry.ID + " LIKE ?",
                 new String[]{lawyerId}
         );
     }

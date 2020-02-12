@@ -69,14 +69,14 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 
                     } while(cursor.moveToNext());
 
-                //    pedidosDbHelper.deletePedidos();
+                 //  pedidosDbHelper.deletePedidos();
                 }
 
 
 
             } else {
                 // Mostrar empty state
-                System.out.println("no hay informacion en la base de datos");
+                System.out.println("no hay informacion en la base de datos para enviar");
 
             }
         }

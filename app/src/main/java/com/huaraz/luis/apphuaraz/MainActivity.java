@@ -46,13 +46,11 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
 
 
-         /*
-        Intent intent=getIntent();
-        Bundle extras =intent.getExtras();
-        nombres= (String) extras.get("nombre");
-        String[] parts = nombres.split(" ");
+
+
+        String[] parts = Global.nombre.split(" ");
         nombres=parts[0];
-        */
+
 
 
 
@@ -138,10 +136,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-/*
+
         View header = navView.getHeaderView(0);
         nombrePerfil = (TextView) header.findViewById(R.id.personalista);
-        nombrePerfil.setText(" Hola :"+nombres.toUpperCase().toString()+" ☺");*/
+        nombrePerfil.setText(" Hola: "+nombres.toUpperCase().toString()+" ☺");
     }
 
     @Override

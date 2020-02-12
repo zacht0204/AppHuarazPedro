@@ -51,7 +51,7 @@
 
                     android:layout_width="150dp"
                     android:layout_height="match_parent"
-                    android:text="Capturar Flor"
+                    android:text="Capturar Fruto o Flor"
                     android:textSize="15dp"
                     android:textStyle="bold"
                     android:textColor="@color/color_primary"
@@ -65,17 +65,26 @@
                     android:layout_width="150dp"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/planta"
+                    android:src="@drawable/fruto2"
                     android:layout_gravity="center_horizontal"/>
 
 
             </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/LineaCabecera"
+                android:layout_width="fill_parent"
+                android:layout_height="10px"
+                android:layout_span="6"
+                android:background="#FFFFFF" >
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:orientation="horizontal"
                 android:background="@drawable/layout_bl2"
+                android:padding="10px"
                 android:gravity="center_horizontal"
                 android:layout_gravity="center_horizontal">
 
@@ -97,17 +106,26 @@
                     android:id="@+id/ownerPhoto2"
                     android:layout_width="150dp"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/planta"
-                    android:layout_gravity="center_horizontal"/>
+                    android:src="@drawable/hoja" />
 
 
             </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/LineaCabecera2"
+                android:layout_width="fill_parent"
+                android:layout_height="10px"
+                android:layout_span="6"
+                android:background="#FFFFFF" >
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:orientation="horizontal"
+                android:padding="10px"
                 android:gravity="center_horizontal"
                 android:background="@drawable/layout_bl2"
                 android:layout_gravity="center_horizontal">
@@ -130,7 +148,7 @@
                     android:layout_width="150dp"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/planta"
+                    android:src="@drawable/raiz"
                     android:layout_gravity="center_horizontal"/>
 
 

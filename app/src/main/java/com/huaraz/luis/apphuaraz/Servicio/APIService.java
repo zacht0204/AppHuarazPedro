@@ -68,7 +68,17 @@ public interface APIService {
                           @Field("temperatura") String temperatura);
 
    ///
+   //////////////////////////////
+   //Busqueda de pedidos por usuario
+   @GET("pedido.php?")
+   Call<List <Pedido> >  getMyPedido(@Query("id_usuario") int id_usuario);
 
+   ////////////////////////////////////////
+
+
+
+
+   ///////////////////////////////////
 
    @POST("post.php")
    @FormUrlEncoded
@@ -102,7 +112,7 @@ public interface APIService {
                             @Field("tipo") int tipo);
    ////////////////////////////////////////
    ////////////////////////////////////////
-   //login del app
+   //login del app de huaraz
    @GET("usuario.php?")
    Call<Usuario>  getlogin(@Query("dni") String dni);
 

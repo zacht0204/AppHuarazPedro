@@ -10,7 +10,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.huaraz.luis.apphuaraz.Adaptador.DemoAdapter;
+import com.huaraz.luis.apphuaraz.Adaptador.PedidoAdapter;
 import com.huaraz.luis.apphuaraz.Model.Demo;
+import com.huaraz.luis.apphuaraz.Model.Pedido;
 import com.huaraz.luis.apphuaraz.Model.Pet;
 import com.huaraz.luis.apphuaraz.Servicio.APIService;
 import com.huaraz.luis.apphuaraz.Servicio.ApiUtils;
@@ -24,9 +26,10 @@ import retrofit2.Response;
 
 public class MisPedidos extends Fragment {
     private APIService mAPIService;
-    DemoAdapter pet;
+    PedidoAdapter pedido;
     private FloatingActionButton fabAddPet;
     ListView lv;
+    String usuario;
 
     public MisPedidos() {
         // Required empty public constructor
@@ -44,6 +47,9 @@ public class MisPedidos extends Fragment {
         View root = inflater.inflate(R.layout.fragment_pets, container, false);
 
         lv = (ListView) root.findViewById(R.id.lista_demos);
+
+        usuario=Global.usuario;
+        System.out.println("valor de usuario"+usuario);
 
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -74,9 +80,45 @@ public class MisPedidos extends Fragment {
     }
 
     public  void  loadProfile(){
-        final List<Demo> itemsLostPets = new ArrayList<>();
+        final List<Pedido> itemsPedidos = new ArrayList<>();
         // final List<Pet> itemsPet = new ArrayList<>();
         System.out.println("Demo Demo");
+        mAPIService.getMyPedido(18).enqueue(new Callback<List<Pedido>>() {
+            @Override
+            public void onResponse(Call<List<Pedido>> call, Response<List<Pedido>> response) {
+
+                if(response.isSuccessful()) {
+                    for(int i=0;i<response.body().size();i++){
+                        itemsPedidos.add(response.body().get(i));
+                        System.out.println("valor de llegADA"+itemsPedidos.get(i).getDistrito());
+                        // itemsPet.add(response.body().get(i).getPet());
+                     //   System.out.println("Luis"+itemsLostPets.get(i).getId_distrito().toString());
+                        // System.out.println("array ++"+itemsLostPets.get(i).getInfo()+"Name"+itemsPet.get(i).getName());
+
+
+                    }
+
+                }else {
+                    int statusCode  = response.code();
+                    System.out.println("2"+statusCode);
+                    // handle request errors depending on status code
+                }
+                if (getActivity()!=null){
+
+                  pedido = new PedidoAdapter (getActivity(),itemsPedidos);
+                    lv.setAdapter(pedido);
+
+                    System.out.println("3");
+                }////codigo importante
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Pedido>> call, Throwable t) {
+
+            }
+        });
+        /*
         mAPIService.getFoto().enqueue(new Callback<List<Demo>>() {
             @Override
             public void onResponse(Call<List<Demo>> call, Response<List<Demo>> response) {
@@ -114,6 +156,7 @@ public class MisPedidos extends Fragment {
                 t.printStackTrace();
             }
         });
+        */
 
 
     }

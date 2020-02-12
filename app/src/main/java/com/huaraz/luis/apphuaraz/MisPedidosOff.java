@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import com.huaraz.luis.apphuaraz.Adaptador.StoreAdapter;
 import com.huaraz.luis.apphuaraz.Model.Demo;
+import com.huaraz.luis.apphuaraz.Model.Pedido;
 import com.huaraz.luis.apphuaraz.Servicio.APIService;
 import com.huaraz.luis.apphuaraz.Servicio.ApiUtils;
 import com.huaraz.luis.apphuaraz.Servicio.Conectividad;
@@ -93,7 +94,7 @@ public class MisPedidosOff extends Fragment {
                       //Recorremos el cursor hasta que no haya más registros
                       do {
 
-                          enviarInformacion( cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6));
+                          enviarInformacion( cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getInt(7),cursor.getString(9));
 
                       } while(cursor.moveToNext());
 
@@ -111,44 +112,33 @@ public class MisPedidosOff extends Fragment {
 
 
       //Enviar informacion
-    public void enviarInformacion(String foto1,String foto2,String foto3,String provincia,String distrito){
+      public void enviarInformacion(String foto1,String foto2,String foto3,String provincia,String distrito,int usuario,String fecha){
 
-            mAPIService = ApiUtils.getAPIService();
+          mAPIService = ApiUtils.getAPIService();
 
-        mAPIService.addFoto(foto1,foto2,foto3,distrito,provincia).enqueue(new Callback<Demo>() {
-        @Override
-        public void onResponse(Call<Demo> call, Response<Demo> response) {
+          mAPIService.addPedido(foto1,foto2,foto3,provincia,distrito,usuario,0,fecha,1,"0","0","0").enqueue(new Callback<Pedido>() {
+              @Override
+              public void onResponse(Call<Pedido> call, Response<Pedido> response) {
 
+                  if(response.isSuccessful()) {
+                      System.out.println("Se envio registro");
 
-            if(response.isSuccessful()) {
-                System.out.println("salio");
+                  }else {
+                      int statusCode  = response.code();
+                      System.out.println("estado de error"+statusCode);
+                      // handle request errors depending on status code
+                  }
 
-            }else {
-                int statusCode  = response.code();
-                System.out.println("no internet1"+statusCode);
-                // handle request errors depending on status code
-            }
+              }
 
-        }
+              @Override
+              public void onFailure(Call<Pedido> call, Throwable t) {
 
-        @Override
-        public void onFailure(Call<Demo> call, Throwable t) {
-
-            System.out.println("conversion issuallallalallae! big problem+"+ t.getMessage());
-            if (t instanceof IOException) {
-                System.out.println("conversion issuallallalallae! big problem");
-                // logging probably not necessary
-            }
-            else {
-
-                // todo log to some central bug tracking service
-            }
-        }
-    });
+              }
+          });
 
 
-    }
-
+      }
 
 
 

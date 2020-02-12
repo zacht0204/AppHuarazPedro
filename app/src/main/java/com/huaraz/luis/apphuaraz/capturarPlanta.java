@@ -123,6 +123,9 @@ public class capturarPlanta extends Fragment {
 
         PedidosDbHelper = new PedidosDbHelper(getActivity());
 
+
+
+
         // tilAddress = (TextInputLayout) root.findViewById(R.id.tilAddress);
 
        // rbgSex = (RadioGroup) root.findViewById(R.id.rbgSexo);
@@ -284,44 +287,11 @@ public class capturarPlanta extends Fragment {
                 }
             });
 
-            //////////////
-
-            /*
-            mAPIService.addFoto(petPhoto64,petPhoto642,petPhoto643,distri,provincia).enqueue(new Callback<Demo>() {
-                @Override
-                public void onResponse(Call<Demo> call, Response<Demo> response) {
-
-
-                    if(response.isSuccessful()) {
-                        System.out.println("salio");
-
-                    }else {
-                        int statusCode  = response.code();
-                        System.out.println("no internet1"+statusCode);
-                        // handle request errors depending on status code
-                    }
-
-                }
-
-                @Override
-                public void onFailure(Call<Demo> call, Throwable t) {
-
-                    System.out.println("conversion issuallallalallae! big problem+"+ t.getMessage());
-                    if (t instanceof IOException) {
-                        System.out.println("conversion issuallallalallae! big problem");
-                        // logging probably not necessary
-                    }
-                    else {
-
-                        // todo log to some central bug tracking service
-                    }
-                }
-            }); */
 
         }else{
 
             System.out.println("no tiene internet");
-            com.huaraz.luis.apphuaraz.Sql.Pedido lawyer = new com.huaraz.luis.apphuaraz.Sql.Pedido("",petPhoto64, petPhoto642, petPhoto643, distri,provincia,"1","1","","S","","","");
+            com.huaraz.luis.apphuaraz.Sql.Pedido lawyer = new com.huaraz.luis.apphuaraz.Sql.Pedido("",petPhoto64, petPhoto642, petPhoto643, distri,provincia,usuario,0,dateString,1,"","","");
 
             System.out.println("no tiene internet2");
             new AddEditLawyerTask().execute(lawyer);
@@ -371,13 +341,16 @@ public class capturarPlanta extends Fragment {
     public void startAlert(int i) {
 
 
+        //int interval = 1000*60*60*2;
+        int interval = 1000*25;
+
         Intent intent = new Intent(getActivity().getApplicationContext(), MyBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 getActivity().getApplicationContext(), 234324243, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
-                + (i * 1000), pendingIntent);
-        Toast.makeText(getActivity().getApplicationContext(), "Alarm activada " + i + " seconds",Toast.LENGTH_LONG).show();
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() ,interval, pendingIntent);
+      //  Toast.makeText(getActivity().getApplicationContext(), "Alarm activada " + i + " seconds",Toast.LENGTH_LONG).show();
     }
 
     public void addFoto1(){

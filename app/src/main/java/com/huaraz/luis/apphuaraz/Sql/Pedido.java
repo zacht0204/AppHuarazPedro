@@ -17,10 +17,10 @@ public class Pedido {
     private String foto_03;
     private String provincia;
     private String 	distrito;
-    private String 	id_usuario;
-    private String 	id_tecnico;
+    private int 	id_usuario;
+    private int 	id_tecnico;
     private String 	fecha;
-    private String 	estado;
+    private int 	estado;
     private String 	latitud;
     private String 	altitud;
     private String temperatura;
@@ -29,7 +29,7 @@ public class Pedido {
     //UID.randomUUID().toString(
 
 
-    public Pedido(String id, String foto_01, String foto_02, String foto_03, String provincia, String distrito, String id_usuario, String id_tecnico, String fecha, String estado, String latitud, String altitud, String temperatura) {
+    public Pedido(String id, String foto_01, String foto_02, String foto_03, String provincia, String distrito, int id_usuario, int id_tecnico, String fecha, int estado, String latitud, String altitud, String temperatura) {
         this.id = UUID.randomUUID().toString();
         this.foto_01 = foto_01;
         this.foto_02 = foto_02;
@@ -53,10 +53,10 @@ public class Pedido {
         foto_03 = cursor.getString(cursor.getColumnIndex(PedidoEntry.foto_03));
         distrito = cursor.getString(cursor.getColumnIndex(PedidoEntry.distrito));
         provincia = cursor.getString(cursor.getColumnIndex(PedidoEntry.provincia));
-        id_usuario = cursor.getString(cursor.getColumnIndex(PedidoEntry.id_usuario));
-        id_tecnico = cursor.getString(cursor.getColumnIndex(PedidoEntry.id_tecnico));
+        id_usuario = cursor.getInt(cursor.getColumnIndex(PedidoEntry.id_usuario));
+        id_tecnico = cursor.getInt(cursor.getColumnIndex(PedidoEntry.id_tecnico));
         fecha = cursor.getString(cursor.getColumnIndex(PedidoEntry.fecha));
-        estado = cursor.getString(cursor.getColumnIndex(PedidoEntry.estado));
+        estado = cursor.getInt(cursor.getColumnIndex(PedidoEntry.estado));
         altitud = cursor.getString(cursor.getColumnIndex(PedidoEntry.altitud));
         latitud = cursor.getString(cursor.getColumnIndex(PedidoEntry.latitud));
         temperatura = cursor.getString(cursor.getColumnIndex(PedidoEntry.temperatura));
@@ -128,19 +128,19 @@ public class Pedido {
         this.distrito = distrito;
     }
 
-    public String getId_usuario() {
+    public int getId_usuario() {
         return id_usuario;
     }
 
-    public void setId_usuario(String id_usuario) {
+    public void setId_usuario(int id_usuario) {
         this.id_usuario = id_usuario;
     }
 
-    public String getId_tecnico() {
+    public int getId_tecnico() {
         return id_tecnico;
     }
 
-    public void setId_tecnico(String id_tecnico) {
+    public void setId_tecnico(int id_tecnico) {
         this.id_tecnico = id_tecnico;
     }
 
@@ -152,11 +152,11 @@ public class Pedido {
         this.fecha = fecha;
     }
 
-    public String getEstado() {
+    public int getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(int estado) {
         this.estado = estado;
     }
 
