@@ -11,12 +11,15 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.huaraz.luis.apphuaraz.Adaptador.StoreAdapter;
+import com.huaraz.luis.apphuaraz.Global;
 import com.huaraz.luis.apphuaraz.MisPedidosOff;
 import com.huaraz.luis.apphuaraz.Model.Demo;
 import com.huaraz.luis.apphuaraz.Model.Pedido;
 import com.huaraz.luis.apphuaraz.Servicio.APIService;
 import com.huaraz.luis.apphuaraz.Servicio.ApiUtils;
 import com.huaraz.luis.apphuaraz.Sql.PedidosDbHelper;
+import com.huaraz.luis.apphuaraz.Sql.UsuariosDbHelper;
+import com.huaraz.luis.apphuaraz.Sql.UsuariosDbHelper;
 
 import java.io.IOException;
 
@@ -27,6 +30,7 @@ import retrofit2.Response;
 public class MyBroadcastReceiver extends BroadcastReceiver {
     private APIService mAPIService;
     private PedidosDbHelper pedidosDbHelper;
+    private UsuariosDbHelper UsuariosDbHelper;
     Context mContext;
 
 
@@ -37,8 +41,24 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
      //   Toast.makeText(context, "Se activo alarma....", Toast.LENGTH_LONG).show();
-        pedidosDbHelper = new PedidosDbHelper(context.getApplicationContext());
-        loadLawyers();
+
+        if(Global.conexion.equals("3")){
+
+            System.out.println("alarma usuario 33333");
+
+            UsuariosDbHelper = new UsuariosDbHelper(context.getApplicationContext());
+            usuarioLawyers();
+
+            pedidosDbHelper = new PedidosDbHelper(context.getApplicationContext());
+            loadLawyers();
+
+        }else{
+
+            pedidosDbHelper = new PedidosDbHelper(context.getApplicationContext());
+            loadLawyers();
+
+        }
+
    //     Toast.makeText(context, "Se termino de enviar....", Toast.LENGTH_LONG).show();
 
 
@@ -47,6 +67,10 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 
     private void loadLawyers() {
         new LawyersLoadTask().execute();
+    }
+
+    private void usuarioLawyers() {
+        new UserLoadTask().execute();
     }
 
     private class LawyersLoadTask extends AsyncTask<Void, Void, Cursor> {
@@ -69,7 +93,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 
                     } while(cursor.moveToNext());
 
-                 //  pedidosDbHelper.deletePedidos();
+                   pedidosDbHelper.deletePedidos();
                 }
 
 
@@ -110,6 +134,41 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
         });
 
 
+
     }
+
+    private class UserLoadTask extends AsyncTask<Void, Void, Cursor> {
+
+        @Override
+        protected Cursor doInBackground(Void... voids) {
+
+            return UsuariosDbHelper.getPedidosos();
+        }
+
+        @Override
+        protected void onPostExecute(Cursor cursor) {
+            if (cursor != null && cursor.getCount() > 0) {
+
+                if (cursor.moveToFirst()) {
+                    //Recorremos el cursor hasta que no haya más registros
+                    do {
+
+                        enviarInformacion( cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getInt(7),cursor.getString(9));
+
+                    } while(cursor.moveToNext());
+
+                    UsuariosDbHelper.deletePedidos();
+                }
+
+
+
+            } else {
+                // Mostrar empty state
+                System.out.println("no hay informacion en la base de datos para enviar");
+
+            }
+        }
+    }
+
 
 }

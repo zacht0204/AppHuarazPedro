@@ -5,5 +5,9 @@ public final class Global {
    public  static String usuario="";
    public  static String nombre="";
 
+   public  static String conexion="";
+
+   public  static String IdDni="";
+
 
 }

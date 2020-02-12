@@ -71,6 +71,8 @@ public class capturarPlanta extends Fragment {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     public String foto ="foto";
 
+
+
     public String Distrito;
     public  String Ciudad;
     TextView nombrePerfil;
@@ -290,12 +292,25 @@ public class capturarPlanta extends Fragment {
 
         }else{
 
-            System.out.println("no tiene internet");
-            com.huaraz.luis.apphuaraz.Sql.Pedido lawyer = new com.huaraz.luis.apphuaraz.Sql.Pedido("",petPhoto64, petPhoto642, petPhoto643, distri,provincia,usuario,0,dateString,1,"","","");
+            if(Global.conexion.equals("3")){
+                System.out.println("no tiene internet");
+                com.huaraz.luis.apphuaraz.Sql.Pedido lawyer = new com.huaraz.luis.apphuaraz.Sql.Pedido(Global.IdDni,petPhoto64, petPhoto642, petPhoto643, distri,provincia,Integer.parseInt(Global.IdDni),0,dateString,3,"","","");
 
-            System.out.println("no tiene internet2");
-            new AddEditLawyerTask().execute(lawyer);
-            startAlert(25);
+                System.out.println("no tiene internet2");
+                new AddEditLawyerTask().execute(lawyer);
+                startAlert(25);
+
+            }else{
+                System.out.println("no tiene internet");
+                com.huaraz.luis.apphuaraz.Sql.Pedido lawyer = new com.huaraz.luis.apphuaraz.Sql.Pedido("",petPhoto64, petPhoto642, petPhoto643, distri,provincia,usuario,0,dateString,1,"","","");
+
+                System.out.println("no tiene internet2");
+                new AddEditLawyerTask().execute(lawyer);
+                startAlert(25);
+
+            }
+
+
             //activar alarma
 
 

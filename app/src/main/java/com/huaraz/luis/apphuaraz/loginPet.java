@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
@@ -20,14 +22,20 @@ import android.widget.Toast;
 import com.huaraz.luis.apphuaraz.Model.Usuario;
 import com.huaraz.luis.apphuaraz.Servicio.APIService;
 import com.huaraz.luis.apphuaraz.Servicio.ApiUtils;
+import com.huaraz.luis.apphuaraz.Servicio.Conectividad;
 import com.huaraz.luis.apphuaraz.Servicio.Peticion;
 
+import com.huaraz.luis.apphuaraz.Servicio.APIService;
+import com.huaraz.luis.apphuaraz.Servicio.ApiUtils;
+import com.huaraz.luis.apphuaraz.Sql.UsuariosDbHelper;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class loginPet extends AppCompatActivity {
+
+    private UsuariosDbHelper usuariosDbHelper;
     private Toolbar toolbar;
     private Button ingresar ,crear;
     private FloatingActionButton fab;
@@ -40,6 +48,10 @@ public class loginPet extends AppCompatActivity {
     FragmentManager fragmentManager = getSupportFragmentManager();
     private String contrasena;
     Usuario per = new Usuario();
+
+    String usuariSinConexion;
+    String contrasenaSinConexion;
+    String sinConexion;
 
     //Datos de usuario
 
@@ -68,6 +80,8 @@ public class loginPet extends AppCompatActivity {
         input_usuario = (EditText)findViewById(R.id.usuario);
         input_contrasena  = (EditText)findViewById(R.id.contrasena);
 
+        usuariosDbHelper = new UsuariosDbHelper(getApplicationContext());
+
       //  mAPIService = ApiUtils.getAPIService();
         // fab=(Button)findViewById(R.id.fab);
     /*
@@ -95,6 +109,7 @@ public class loginPet extends AppCompatActivity {
         ingresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if(input_usuario.getText().length()!=0 && input_usuario.getText().toString()!=""){
                     //Ingreso de al menu de datos
                     if(input_contrasena.getText().length()!=0 && input_contrasena.getText().toString()!=""){
@@ -110,11 +125,41 @@ public class loginPet extends AppCompatActivity {
 
                     }else{
 
+                        Toast toast = new Toast(getApplicationContext());
+
+                        LayoutInflater inflater = getLayoutInflater();
+                        View layout = inflater.inflate(R.layout.toast_layout,
+                                (ViewGroup) findViewById(R.id.lytLayout));
+
+                        TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
+                        txtMsg.setText("Ingresar su contraseña");
+
+                        toast.setDuration(Toast.LENGTH_LONG);
+                        toast.setView(layout);
+                        toast.show();
+
+
 
                     }
                 }else {
 
+
+                    Toast toast = new Toast(getApplicationContext());
+
+                    LayoutInflater inflater = getLayoutInflater();
+                    View layout = inflater.inflate(R.layout.toast_layout,
+                            (ViewGroup) findViewById(R.id.lytLayout));
+
+                    TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
+                    txtMsg.setText("Ingresar su "+"DNI"+" de Usuario");
+
+                    toast.setDuration(Toast.LENGTH_LONG);
+                    toast.setView(layout);
+                    toast.show();
+
                 }
+
+
             }
         });
 
@@ -218,7 +263,7 @@ public class loginPet extends AppCompatActivity {
     public void getIngreso(String usuario , String contrasena1){
 
         contrasena=contrasena1;
-
+        if(Conectividad.isOnline(getApplicationContext().getApplicationContext())){
 
         mAPIService = ApiUtils.getAPIService();
         try {
@@ -309,7 +354,15 @@ public class loginPet extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        }else{
 
+            usuarioLawyers();
+            System.out.println("Login sin internet");
+
+
+
+
+        }
       /*
 
         mAPIService.getIngreso(peticion).enqueue(new Callback<UserResponse>() {
@@ -375,4 +428,101 @@ public class loginPet extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    private void usuarioLawyers() {
+        new UsuarioLoadTask().execute();
+    }
+
+
+    private class UsuarioLoadTask extends AsyncTask<Void, Void, Cursor> {
+
+        @Override
+        protected Cursor doInBackground(Void... voids) {
+
+            return usuariosDbHelper.getPedidosos();
+        }
+
+        @Override
+        protected void onPostExecute(Cursor cursor) {
+            if (cursor != null && cursor.getCount() > 0) {
+
+                if (cursor.moveToFirst()) {
+                    //Recorremos el cursor hasta que no haya más registros
+                    do {
+                        Global.nombre=cursor.getString(2);
+                        usuariSinConexion=cursor.getString(4);
+                        contrasenaSinConexion=cursor.getString(5);
+                        sinConexion=cursor.getString(8);
+
+                        System.out.println("datos sin conexion"+usuariSinConexion+contrasenaSinConexion);
+                        System.out.println("dni"+sinConexion);
+
+
+
+                    } while(cursor.moveToNext());
+
+                    if(usuario.equals(usuariSinConexion)&&contrasenaSinConexion.equals(contrasena)){
+
+                        Toast toast = new Toast(getApplicationContext());
+
+                        LayoutInflater inflater = getLayoutInflater();
+                        View layout = inflater.inflate(R.layout.toast_layout,
+                                (ViewGroup) findViewById(R.id.lytLayout));
+
+                        TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
+                        txtMsg.setText("¡Bienvenido , es un placer poder ayudarlo!");
+
+
+
+
+                        Global.conexion=sinConexion;
+                        Global.IdDni=usuariSinConexion;
+
+                        toast.setDuration(Toast.LENGTH_LONG);
+                        toast.setView(layout);
+                        toast.show();
+
+                        Intent in = new Intent(loginPet.this,MainActivity.class);
+                        //  in.putExtra("nombre",per.getNombres());
+
+                        startActivity(in);
+
+
+
+                       // usuario
+                        //contrasena
+
+                    }else{
+
+                        Toast toast = new Toast(getApplicationContext());
+
+                        LayoutInflater inflater = getLayoutInflater();
+                        View layout = inflater.inflate(R.layout.toast_layout,
+                                (ViewGroup) findViewById(R.id.lytLayout));
+
+                        TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
+                        txtMsg.setText("¡Verificar su Usuario o Contraseña! ");
+
+                        toast.setDuration(Toast.LENGTH_LONG);
+                        toast.setView(layout);
+                        toast.show();
+
+
+
+
+                    }
+                  //  usuariosDbHelper.deletePedidos();
+                }
+
+
+
+            } else {
+                // Mostrar empty state
+                System.out.println("no hay informacion en la base de datos para enviar");
+
+            }
+        }
+    }
+
+
 }

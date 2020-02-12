@@ -29,7 +29,7 @@ public class MisPedidos extends Fragment {
     PedidoAdapter pedido;
     private FloatingActionButton fabAddPet;
     ListView lv;
-    String usuario;
+    int  usuario;
 
     public MisPedidos() {
         // Required empty public constructor
@@ -48,7 +48,7 @@ public class MisPedidos extends Fragment {
 
         lv = (ListView) root.findViewById(R.id.lista_demos);
 
-        usuario=Global.usuario;
+        usuario=Integer.parseInt(Global.usuario);
         System.out.println("valor de usuario"+usuario);
 
 
@@ -83,7 +83,7 @@ public class MisPedidos extends Fragment {
         final List<Pedido> itemsPedidos = new ArrayList<>();
         // final List<Pet> itemsPet = new ArrayList<>();
         System.out.println("Demo Demo");
-        mAPIService.getMyPedido(18).enqueue(new Callback<List<Pedido>>() {
+        mAPIService.getMyPedido(usuario).enqueue(new Callback<List<Pedido>>() {
             @Override
             public void onResponse(Call<List<Pedido>> call, Response<List<Pedido>> response) {
 

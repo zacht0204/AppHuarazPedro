@@ -76,13 +76,13 @@ public class UsuariosDbHelper extends SQLiteOpenHelper {
         // No hay operaciones
     }
 
-    public long saveLawyer(Pedido pedido) {
+    public long saveLawyer(Usuario usuario) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
         return sqLiteDatabase.insert(
                 UsuarioEntry.TABLE_NAME,
                 null,
-                pedido.toContentValues());
+                usuario.toContentValues());
 
     }
 
