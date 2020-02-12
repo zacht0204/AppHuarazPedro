@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.huaraz.luis.apphuaraz.Adaptador.StoreAdapter;
 import com.huaraz.luis.apphuaraz.MisPedidosOff;
 import com.huaraz.luis.apphuaraz.Model.Demo;
+import com.huaraz.luis.apphuaraz.Model.Pedido;
 import com.huaraz.luis.apphuaraz.Servicio.APIService;
 import com.huaraz.luis.apphuaraz.Servicio.ApiUtils;
 import com.huaraz.luis.apphuaraz.Sql.PedidosDbHelper;
@@ -35,10 +36,10 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
     ListView lv;
     @Override
     public void onReceive(Context context, Intent intent) {
-        Toast.makeText(context, "Se activo alarma....", Toast.LENGTH_LONG).show();
+     //   Toast.makeText(context, "Se activo alarma....", Toast.LENGTH_LONG).show();
         pedidosDbHelper = new PedidosDbHelper(context.getApplicationContext());
         loadLawyers();
-        Toast.makeText(context, "Se termino de enviar....", Toast.LENGTH_LONG).show();
+   //     Toast.makeText(context, "Se termino de enviar....", Toast.LENGTH_LONG).show();
 
 
     }
@@ -64,11 +65,11 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
                     //Recorremos el cursor hasta que no haya más registros
                     do {
 
-                        enviarInformacion( cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6));
+                        enviarInformacion( cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getInt(7),cursor.getString(9));
 
                     } while(cursor.moveToNext());
 
-                    pedidosDbHelper.deletePedidos();
+                //    pedidosDbHelper.deletePedidos();
                 }
 
 
@@ -76,44 +77,35 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
             } else {
                 // Mostrar empty state
                 System.out.println("no hay informacion en la base de datos");
+
             }
         }
     }
 
 
     //Enviar informacion
-    public void enviarInformacion(String foto1,String foto2,String foto3,String provincia,String distrito){
+    public void enviarInformacion(String foto1,String foto2,String foto3,String provincia,String distrito,int usuario,String fecha){
 
         mAPIService = ApiUtils.getAPIService();
 
-        mAPIService.addFoto(foto1,foto2,foto3,distrito,provincia).enqueue(new Callback<Demo>() {
+        mAPIService.addPedido(foto1,foto2,foto3,provincia,distrito,usuario,0,fecha,1,"0","0","0").enqueue(new Callback<Pedido>() {
             @Override
-            public void onResponse(Call<Demo> call, Response<Demo> response) {
-
+            public void onResponse(Call<Pedido> call, Response<Pedido> response) {
 
                 if(response.isSuccessful()) {
-                    System.out.println("salio");
+                    System.out.println("Se envio registro");
 
                 }else {
                     int statusCode  = response.code();
-                    System.out.println("no internet1"+statusCode);
+                    System.out.println("estado de error"+statusCode);
                     // handle request errors depending on status code
                 }
 
             }
 
             @Override
-            public void onFailure(Call<Demo> call, Throwable t) {
+            public void onFailure(Call<Pedido> call, Throwable t) {
 
-                System.out.println("conversion issuallallalallae! big problem+"+ t.getMessage());
-                if (t instanceof IOException) {
-                    System.out.println("conversion issuallallalallae! big problem");
-                    // logging probably not necessary
-                }
-                else {
-
-                    // todo log to some central bug tracking service
-                }
             }
         });
 
