@@ -6,8 +6,8 @@
     <string name="seccion_1">Inicio</string>
     <string name="seccion_2">Capturar Plantas</string>
     <string name="seccion_3">Mis Pedidos</string>
-    <string name="seccion_4">Mis Tiendas</string>
-    <string name="seccion_5">Eventos de Plantas</string>
+    <string name="seccion_4">Mis Eventos</string>
+    <string name="seccion_5">Consejos</string>
     <string name="seccion_6">Cerrar Sesion</string>
     <string name="otras_opciones">Otras opciones</string>
     <string name="opcion_1">Opción 1</string>

@@ -103,7 +103,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
                     //Recorremos el cursor hasta que no haya más registros
                     do {
 
-                        enviarInformacion( cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getInt(7),cursor.getString(9));
+                        enviarInformacion( cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getInt(7), cursor.getString(8));
 
                     } while(cursor.moveToNext());
 
@@ -168,7 +168,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
                     //Recorremos el cursor hasta que no haya más registros
                     do {
 
-                        enviarUsuario(cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8));
+                        enviarUsuario(cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7));
 
                     } while(cursor.moveToNext());
 
@@ -186,7 +186,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
     }
 
 
-    public void enviarUsuario(String string, String nombres, String apellidos, String dni, String contrasena, String correo, String telefono){
+    public void enviarUsuario( String nombres, String apellidos, String dni, String contrasena, String correo, String telefono){
 
         mAPIService.addUsuario(nombres,apellidos,dni,contrasena,correo,telefono,3).enqueue(new Callback<Usuario>() {
             @Override
@@ -195,7 +195,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
                 if(response.isSuccessful()) {
 
 
-
+                    System.out.println("salio el usuario modo off");
 
 
 

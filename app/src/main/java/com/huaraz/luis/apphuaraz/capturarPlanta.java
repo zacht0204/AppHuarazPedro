@@ -104,7 +104,7 @@ public class capturarPlanta extends Fragment {
 
 
         usuario=Integer.parseInt(Global.usuario);
-        System.out.println("Global"+usuario);
+        System.out.println("Global de usuario de capturar planta"+usuario);
 
         
 
@@ -293,20 +293,19 @@ public class capturarPlanta extends Fragment {
         }else{
 
             if(Global.conexion.equals("3")){
-                System.out.println("no tiene internet");
-                com.huaraz.luis.apphuaraz.Sql.Pedido lawyer = new com.huaraz.luis.apphuaraz.Sql.Pedido(Global.IdDni,petPhoto64, petPhoto642, petPhoto643, distri,provincia,Integer.parseInt(Global.IdDni),0,dateString,3,"","","");
-
-                System.out.println("no tiene internet2");
+                System.out.println("global sin conexion");
+                com.huaraz.luis.apphuaraz.Sql.Pedido lawyer = new com.huaraz.luis.apphuaraz.Sql.Pedido("",petPhoto64, petPhoto642, petPhoto643, distri,provincia,Integer.parseInt(Global.IdDni),0,dateString,3,"","","");
                 new AddEditLawyerTask().execute(lawyer);
                 startAlert(25);
 
             }else{
+                /*
                 System.out.println("no tiene internet");
                 com.huaraz.luis.apphuaraz.Sql.Pedido lawyer = new com.huaraz.luis.apphuaraz.Sql.Pedido("",petPhoto64, petPhoto642, petPhoto643, distri,provincia,usuario,0,dateString,1,"","","");
 
                 System.out.println("no tiene internet2");
                 new AddEditLawyerTask().execute(lawyer);
-                startAlert(25);
+                startAlert(25);*/
 
             }
 

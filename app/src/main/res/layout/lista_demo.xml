@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginTop= "35dp"
-        android:text="Provincia: "
+        android:text="Distrito: "
         android:textColor="@color/textColor"/>
 
     <TextView
@@ -60,7 +60,6 @@
         android:background="@drawable/barra"
         android:layout_height="4dp"
         android:id="@+id/demo"
-        android:layout_alignLeft="@+id/desc_prod"
         android:layout_below="@+id/petName1"/>
 
 
@@ -71,7 +70,7 @@
         android:id="@+id/petName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Distrito: "
+        android:text="Ciudad: "
         android:layout_below="@+id/petInfo"
         android:layout_alignStart="@+id/petInfo"
         android:textColor="@color/textColor"/>

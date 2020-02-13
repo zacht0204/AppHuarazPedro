@@ -286,7 +286,7 @@ public class loginPet extends AppCompatActivity {
 
                             Global.usuario=(String.valueOf(per.getId_usuario()));
                             Global.nombre=per.getNombres();
-                            System.out.println("Global"+Global.usuario);
+                            System.out.println("Global con internet"+Global.usuario);
 
 
                             Toast toast = new Toast(getApplicationContext());
@@ -477,6 +477,7 @@ public class loginPet extends AppCompatActivity {
 
                         Global.conexion=sinConexion;
                         Global.IdDni=usuariSinConexion;
+                        Global.usuario=usuariSinConexion;
 
                         toast.setDuration(Toast.LENGTH_LONG);
                         toast.setView(layout);

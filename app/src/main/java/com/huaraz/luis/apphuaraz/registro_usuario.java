@@ -179,7 +179,7 @@ public class registro_usuario extends AppCompatActivity {
 
                 //No tiene internet
 
-                com.huaraz.luis.apphuaraz.Sql.Usuario Usuario = new com.huaraz.luis.apphuaraz.Sql.Usuario(dni,nombres,apellidos,dni,contrasena,correo,telefono,3);
+                com.huaraz.luis.apphuaraz.Sql.Usuario Usuario = new com.huaraz.luis.apphuaraz.Sql.Usuario("",nombres,apellidos,dni,contrasena,correo,telefono,3);
                 new AddEditUserTask().execute(Usuario);
                 startAlertUsuario(25);
                 System.out.println("Se registro usuario sin internet");

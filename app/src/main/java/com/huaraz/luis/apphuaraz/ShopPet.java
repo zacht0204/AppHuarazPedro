@@ -8,8 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.huaraz.luis.apphuaraz.Adaptador.NoticiaAdapter;
 import com.huaraz.luis.apphuaraz.Adaptador.StoreAdapter;
+import com.huaraz.luis.apphuaraz.Model.Noticias;
 import com.huaraz.luis.apphuaraz.Model.Store;
 import com.huaraz.luis.apphuaraz.Servicio.APIService;
 import com.huaraz.luis.apphuaraz.Servicio.ApiUtils;
@@ -25,7 +28,14 @@ public class ShopPet extends Fragment {
 
     private APIService mAPIService;
 
-    StoreAdapter LostPet;
+   // StoreAdapter LostPet;
+
+  ///  private APIService mAPIService;
+    //Inovacaion del servicio rest
+
+    NoticiaAdapter LostPet;
+
+   // ListView lv;
 
     ListView lv;
 
@@ -44,12 +54,62 @@ public class ShopPet extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_shop, container, false);
 
-        lv = (ListView) root.findViewById(R.id.lista_store1);
+        Noticias no = new Noticias();
+        Noticias n1 = new Noticias();
+        Noticias n2 = new Noticias();
+        Noticias n3 = new Noticias();
+        Noticias n4 = new Noticias();
+
+        no.setNoticia("Evento de Plantas");
+        no.setCaracteristica("Fertilizacion");
+        no.setFecha("25/11/2019");
+
+        n1.setNoticia("Evento de Plantas");
+        n1.setCaracteristica("Injertos");
+        n1.setFecha("30/11/2019");
+
+        n2.setNoticia("Formas de Sembrado");
+        n2.setCaracteristica("Fertilizacion");
+        n2.setFecha("01/01/2020");
+
+        n3.setNoticia("Evento de Truchas");
+        n3.setCaracteristica("Criaderos");
+        n3.setFecha("02/03/2020");
+
+        n4.setNoticia("Evento de Naranja");
+        n4.setCaracteristica("Plantacion");
+        n4.setFecha("03/04/2020");
+
+        final List<Noticias> itemsPets = new ArrayList<>();
+        itemsPets.add(no);
+        itemsPets.add(n1);
+        itemsPets.add(n2);
+        itemsPets.add(n3);
+        itemsPets.add(n4);
+
+        lv = (ListView) root.findViewById(R.id.lista_noticia);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(getActivity(),"Evento Proximo a Informarle ",Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        LostPet = new NoticiaAdapter(getActivity(),itemsPets);
+        lv.setAdapter(LostPet);
+
+
+
+        ///Demo de valor bueno
+
+        /*
 
         mAPIService = ApiUtils.getAPIService();
         //codigoSocio = WebServiceValidarUsuario.codigoSocio;
 
         tiendas();
+
+
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -78,13 +138,15 @@ public class ShopPet extends Fragment {
         //task.execute();
         //Evento de pruebas
 
+        */
+
         return  root;
 
     }
 
     public  void tiendas (){
 
-
+  /*
         final List<Store> itemsPets = new ArrayList<>();
         mAPIService.getStore().enqueue(new Callback<List<Store>>() {
             @Override
@@ -116,7 +178,7 @@ public class ShopPet extends Fragment {
         });
 
 
-
+   */
     }
 
 

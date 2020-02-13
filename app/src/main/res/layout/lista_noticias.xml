@@ -15,7 +15,6 @@
         android:id="@+id/petPhoto"
         android:layout_width="220dp"
         android:layout_height="120dp"
-        android:layout_below="@+id/demo"
         android:layout_marginLeft="135dp"
         android:layout_marginTop="6dp"
         android:background="@drawable/casera"
@@ -36,13 +35,6 @@
         android:textColor="@color/textColor"/>
 
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:background="@drawable/barra"
-        android:layout_height="4dp"
-        android:id="@+id/demo"
-        android:layout_alignLeft="@+id/desc_prod"
-        android:layout_below="@+id/petName"/>
 
 
 
