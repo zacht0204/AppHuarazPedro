@@ -128,7 +128,7 @@ public class registro_usuario extends AppCompatActivity {
 
             System.out.println("entreo" +pass+passConfirm);
 
-            if(Conectividad.isOnline(getApplicationContext().getApplicationContext())){
+            if(isOnlineNet()){
 
             // mAPIService.addUsuario
             //Registro de usuario de tecnico
@@ -173,15 +173,18 @@ public class registro_usuario extends AppCompatActivity {
 
                 }
             });
+                ///Modo Seguro
+                com.huaraz.luis.apphuaraz.Sql.Usuario Usuario = new com.huaraz.luis.apphuaraz.Sql.Usuario(nombres,apellidos,dni,contrasena,correo,telefono,3);
+                new AddEditUserTask().execute(Usuario);
 
             }else{
 
 
                 //No tiene internet
 
-                com.huaraz.luis.apphuaraz.Sql.Usuario Usuario = new com.huaraz.luis.apphuaraz.Sql.Usuario("",nombres,apellidos,dni,contrasena,correo,telefono,3);
+                com.huaraz.luis.apphuaraz.Sql.Usuario Usuario = new com.huaraz.luis.apphuaraz.Sql.Usuario(nombres,apellidos,dni,contrasena,correo,telefono,3);
                 new AddEditUserTask().execute(Usuario);
-                startAlertUsuario(25);
+             //   startAlertUsuario(25);
                 System.out.println("Se registro usuario sin internet");
 
 
@@ -195,7 +198,7 @@ public class registro_usuario extends AppCompatActivity {
         protected Boolean doInBackground(com.huaraz.luis.apphuaraz.Sql.Usuario... usuarios) {
 
 
-            System.out.println("registro de usuario");
+            System.out.println("registro de usuario en la base de datos oFF");
             return UsuariosDbHelper.saveLawyer(usuarios[0]) > 0;
 
         }
@@ -239,6 +242,22 @@ public class registro_usuario extends AppCompatActivity {
     private void showAddEditError() {
         Toast.makeText(getApplicationContext(),
                 "Error al agregar nueva información", Toast.LENGTH_SHORT).show();
+    }
+
+    public Boolean isOnlineNet() {
+
+        try {
+            Process p = Runtime.getRuntime().exec("ping -c 1 www.google.es");
+
+            int val           = p.waitFor();
+            boolean reachable = (val == 0);
+            return reachable;
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public void startAlertUsuario(int i) {

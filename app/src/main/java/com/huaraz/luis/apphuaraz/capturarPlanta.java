@@ -265,7 +265,7 @@ public class capturarPlanta extends Fragment {
 
 
 
-        if(Conectividad.isOnline(getActivity().getApplicationContext())){
+        if(isOnlineNet()){
 
             //Metodo Actualizado
             mAPIService.addPedido(petPhoto64,petPhoto642,petPhoto643,distri,provincia,usuario,0,dateString,1,"2","2","2").enqueue(new Callback<Pedido>() {
@@ -292,13 +292,14 @@ public class capturarPlanta extends Fragment {
 
         }else{
 
-            if(Global.conexion.equals("3")){
+
                 System.out.println("global sin conexion");
                 com.huaraz.luis.apphuaraz.Sql.Pedido lawyer = new com.huaraz.luis.apphuaraz.Sql.Pedido("",petPhoto64, petPhoto642, petPhoto643, distri,provincia,Integer.parseInt(Global.IdDni),0,dateString,3,"","","");
+                System.out.println("fecha sin conexion"+dateString);
                 new AddEditLawyerTask().execute(lawyer);
                 startAlert(25);
 
-            }else{
+
                 /*
                 System.out.println("no tiene internet");
                 com.huaraz.luis.apphuaraz.Sql.Pedido lawyer = new com.huaraz.luis.apphuaraz.Sql.Pedido("",petPhoto64, petPhoto642, petPhoto643, distri,provincia,usuario,0,dateString,1,"","","");
@@ -307,7 +308,7 @@ public class capturarPlanta extends Fragment {
                 new AddEditLawyerTask().execute(lawyer);
                 startAlert(25);*/
 
-            }
+
 
 
             //activar alarma
@@ -317,6 +318,21 @@ public class capturarPlanta extends Fragment {
        // friendsList.add(fotito);
 
 
+    }
+    public Boolean isOnlineNet() {
+
+        try {
+            Process p = Runtime.getRuntime().exec("ping -c 1 www.google.es");
+
+            int val           = p.waitFor();
+            boolean reachable = (val == 0);
+            return reachable;
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private class AddEditLawyerTask extends AsyncTask<com.huaraz.luis.apphuaraz.Sql.Pedido, Void, Boolean> {
@@ -355,8 +371,8 @@ public class capturarPlanta extends Fragment {
     public void startAlert(int i) {
 
 
-        //int interval = 1000*60*60*2;
-        int interval = 1000*25;
+        int interval = 1000*60*60*2; //cada dos horas
+       // int interval = 1000*25;
 
         Intent intent = new Intent(getActivity().getApplicationContext(), MyBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(

@@ -16,7 +16,7 @@ public class Usuario {
     private String telefono;
     private int     tipo;
 
-    public Usuario(String id, String nombres, String apellidos, String dni, String contrasena, String correo, String telefono, int tipo) {
+    public Usuario(String nombres, String apellidos, String dni, String contrasena, String correo, String telefono,int tipo) {
         this.id = UUID.randomUUID().toString();
         this.nombres = nombres;
         this.apellidos = apellidos;

@@ -1,5 +1,6 @@
 package com.huaraz.luis.apphuaraz;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.huaraz.luis.apphuaraz.Adaptador.DemoAdapter;
 import com.huaraz.luis.apphuaraz.Adaptador.PedidoAdapter;
@@ -44,17 +47,44 @@ public class MisPedidos extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_pets, container, false);
+        final View root = inflater.inflate(R.layout.fragment_pets, container, false);
 
         lv = (ListView) root.findViewById(R.id.lista_demos);
 
-        usuario=Integer.parseInt(Global.usuario);
-        System.out.println("valor de usuario"+usuario);
+        if(isOnlineNet()){
+
+            usuario=Integer.parseInt(Global.usuario);
+            System.out.println("valor de usuario"+usuario);
+
+            mAPIService = ApiUtils.getAPIService();
+            loadProfile();
+
+
+        }else{
+
+            Toast.makeText(getActivity(),"Nesecitas contar un Red de Internet estable. ",Toast.LENGTH_LONG).show();
+        }
+
+
 
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Toast toast = new Toast(getContext());
+
+                LayoutInflater inflater = getLayoutInflater();
+                View layout = inflater.inflate(R.layout.toast_layout, (ViewGroup) root.findViewById((R.id.lytLayout)));
+
+                TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
+                txtMsg.setText("¡Estamos evaluando su Envio,Un tecnico se comunicara con usted lo mas pronto posible!");
+
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
+
+
 
 
             }
@@ -72,52 +102,57 @@ public class MisPedidos extends Fragment {
         // AsyncCallWS task = new AsyncCallWS();
         //task.execute();
         //Evento de pruebas
-        mAPIService = ApiUtils.getAPIService();
-        loadProfile();
 
         return  root;
 
     }
 
     public  void  loadProfile(){
-        final List<Pedido> itemsPedidos = new ArrayList<>();
-        // final List<Pet> itemsPet = new ArrayList<>();
-        System.out.println("Demo Demo");
-        mAPIService.getMyPedido(usuario).enqueue(new Callback<List<Pedido>>() {
-            @Override
-            public void onResponse(Call<List<Pedido>> call, Response<List<Pedido>> response) {
-
-                if(response.isSuccessful()) {
-                    for(int i=0;i<response.body().size();i++){
-                        itemsPedidos.add(response.body().get(i));
-                        System.out.println("valor de llegADA"+itemsPedidos.get(i).getDistrito());
-                        // itemsPet.add(response.body().get(i).getPet());
-                     //   System.out.println("Luis"+itemsLostPets.get(i).getId_distrito().toString());
-                        // System.out.println("array ++"+itemsLostPets.get(i).getInfo()+"Name"+itemsPet.get(i).getName());
 
 
+
+            final List<Pedido> itemsPedidos = new ArrayList<>();
+            // final List<Pet> itemsPet = new ArrayList<>();
+            System.out.println("Demo Demo");
+            mAPIService.getMyPedido(usuario).enqueue(new Callback<List<Pedido>>() {
+                @Override
+                public void onResponse(Call<List<Pedido>> call, Response<List<Pedido>> response) {
+
+                    if(response.isSuccessful()) {
+                        for(int i=0;i<response.body().size();i++){
+                            itemsPedidos.add(response.body().get(i));
+                            System.out.println("valor de llegADA"+itemsPedidos.get(i).getDistrito());
+                            // itemsPet.add(response.body().get(i).getPet());
+                            //   System.out.println("Luis"+itemsLostPets.get(i).getId_distrito().toString());
+                            // System.out.println("array ++"+itemsLostPets.get(i).getInfo()+"Name"+itemsPet.get(i).getName());
+
+
+                        }
+
+                    }else {
+                        int statusCode  = response.code();
+                        System.out.println("2"+statusCode);
+                        // handle request errors depending on status code
                     }
+                    if (getActivity()!=null){
 
-                }else {
-                    int statusCode  = response.code();
-                    System.out.println("2"+statusCode);
-                    // handle request errors depending on status code
+                        pedido = new PedidoAdapter (getActivity(),itemsPedidos);
+                        lv.setAdapter(pedido);
+
+                        System.out.println("3");
+                    }////codigo importante
+
                 }
-                if (getActivity()!=null){
 
-                  pedido = new PedidoAdapter (getActivity(),itemsPedidos);
-                    lv.setAdapter(pedido);
+                @Override
+                public void onFailure(Call<List<Pedido>> call, Throwable t) {
 
-                    System.out.println("3");
-                }////codigo importante
+                }
+            });
 
-            }
 
-            @Override
-            public void onFailure(Call<List<Pedido>> call, Throwable t) {
 
-            }
-        });
+
         /*
         mAPIService.getFoto().enqueue(new Callback<List<Demo>>() {
             @Override
@@ -159,6 +194,22 @@ public class MisPedidos extends Fragment {
         */
 
 
+    }
+
+    public Boolean isOnlineNet() {
+
+        try {
+            Process p = Runtime.getRuntime().exec("ping -c 1 www.google.es");
+
+            int val           = p.waitFor();
+            boolean reachable = (val == 0);
+            return reachable;
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return false;
     }
 
 

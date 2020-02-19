@@ -68,7 +68,7 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
         String  fecha="";
 
         if(pedido.getEstado()==1){
-            estadoPedido="Procesando Pedido";
+            estadoPedido="Evaluando Pedido";
 
         }else {
             estadoPedido="Pendiente";

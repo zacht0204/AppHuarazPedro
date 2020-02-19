@@ -94,7 +94,7 @@
         android:text="Estado del Pedido:"
         android:layout_below="@+id/petName"
         android:layout_alignStart="@+id/petName"
-        android:textColor="@color/color_accent"/>
+        android:textColor="@color/icons"/>
     <TextView
         android:id="@+id/estadoP"
         android:layout_width="wrap_content"
@@ -110,7 +110,7 @@
         android:text="Fecha del Pedido:"
         android:layout_below="@+id/estadoP"
         android:layout_alignStart="@+id/estadoP"
-        android:textColor="@color/color_accent"/>
+        android:textColor="@color/icons"/>
     <TextView
         android:id="@+id/fechaP"
         android:layout_width="wrap_content"

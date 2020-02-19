@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="120dp"
         android:layout_marginLeft="0dp"
-        android:text=" * OBTENGA UN ACCESO EXCLUSIVO A UN TECNICO DE PLANTAS ONLINE Y TRATAMIENTO EXCLUSIVO A SUS PLANTAS * "
+        android:text=" * UN TECNICO DE PLANTAS ESTA A LA ESPERA DE SU CONSULTA Y TRATAMIENTO EXCLUSIVO DE SUS CULTIVOS * "
         android:textStyle="bold"
         android:gravity="center"
         android:textAlignment="center"

@@ -2,7 +2,7 @@
 <resources>
     <color name="color_primary">#3F51B5</color>
     <color name="color_primary_dark">#303F9F</color>
-    <color name="color_accent">#D50000</color>
+    <color name="color_accent">#FFFFFF</color>
     <color name="texto">#000000</color>
     <color name="textColor">#2e7d32</color>
     <color name ="titulo">#000000</color>
@@ -12,6 +12,10 @@
     <color name="accent_color">#FFFFFF</color>
     <color name="evaluacion">#03A9F4</color>2196F3
     <color name="estado">#03A9F4</color>
+
+    <color name="button_normal">#FF8A65</color>
+    <color name="button_pressed">#2196f3</color>
+    <color name="dialog_divider">@android:color/black</color>
 
     <!--Colores temporrales-->
     <color name="hintInfo">#FF8A65</color>

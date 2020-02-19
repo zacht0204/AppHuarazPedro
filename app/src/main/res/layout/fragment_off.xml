@@ -9,11 +9,20 @@
     android:layout_height="wrap_content">
 
 
-    <Button
-        android:text="procesar informacion"
+    <TextView
+        android:paddingTop="10dp"
+        android:id="@+id/desc_prod"
         android:layout_width="wrap_content"
-        android:id="@+id/boton_registrar_planta1"
-        android:layout_height="wrap_content" />
+        android:layout_height="100dp"
+        android:layout_marginLeft="0dp"
+        android:layout_centerHorizontal="true"
+        android:text=" CONSEJOS DEL MES PARA TUS CULTIVOS  "
+        android:textColor="@color/hintInfo"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textAppearance="?attr/textAppearanceListItem"
+        />
 
 </LinearLayout>
 

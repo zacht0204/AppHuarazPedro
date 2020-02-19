@@ -129,11 +129,11 @@ public class UsuariosDbHelper extends SQLiteOpenHelper {
                 null);
     }
 
-    public int updateLawyer(Pedido pedido, String lawyerId) {
+    public int updateLawyerUser(Usuario pedido, String lawyerId) {
         return getWritableDatabase().update(
                 UsuarioEntry.TABLE_NAME,
                 pedido.toContentValues(),
-                UsuarioEntry.ID + " LIKE ?",
+                UsuarioEntry.dni + " LIKE ?",
                 new String[]{lawyerId}
         );
     }

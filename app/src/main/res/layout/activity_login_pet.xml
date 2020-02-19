@@ -86,7 +86,21 @@
             android:background="@drawable/layout_bl"
             android:text="Registro" />
 
+
+
     </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/llamar"
+        android:layout_gravity="right"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="false"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp" />
     <!--
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

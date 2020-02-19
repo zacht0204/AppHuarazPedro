@@ -41,7 +41,9 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
     private UsuariosDbHelper UsuariosDbHelper;
     Context mContext;
 
+    String DNI="";
 
+    int envio=0;
     StoreAdapter LostPet;
 
     private Button boton_registrar_planta1;
@@ -50,13 +52,9 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
      //   Toast.makeText(context, "Se activo alarma....", Toast.LENGTH_LONG).show();
 
-        UsuariosDbHelper = new UsuariosDbHelper(context.getApplicationContext());
-        usuarioLawyers();
-        /*
+        System.out.println("inicio programacion");
 
-        if(Global.conexion.equals("3")){
-
-            System.out.println("alarma usuario 33333");
+        if(isOnlineNet()){
 
             UsuariosDbHelper = new UsuariosDbHelper(context.getApplicationContext());
             usuarioLawyers();
@@ -64,18 +62,32 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
             pedidosDbHelper = new PedidosDbHelper(context.getApplicationContext());
             loadLawyers();
 
+
+
+
         }else{
 
-            pedidosDbHelper = new PedidosDbHelper(context.getApplicationContext());
-            loadLawyers();
 
         }
 
-        */
-
-   //     Toast.makeText(context, "Se termino de enviar....", Toast.LENGTH_LONG).show();
 
 
+    }
+
+    public Boolean isOnlineNet() {
+
+        try {
+            Process p = Runtime.getRuntime().exec("ping -c 1 www.google.es");
+
+            int val           = p.waitFor();
+            boolean reachable = (val == 0);
+            return reachable;
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return false;
     }
 
 
@@ -103,11 +115,11 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
                     //Recorremos el cursor hasta que no haya más registros
                     do {
 
-                        enviarInformacion( cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getInt(7), cursor.getString(8));
+                        enviarInformacion( cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getInt(7), cursor.getString(9));
 
                     } while(cursor.moveToNext());
 
-                   pedidosDbHelper.deletePedidos();
+                  pedidosDbHelper.deletePedidos();
                 }
 
 
@@ -168,11 +180,23 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
                     //Recorremos el cursor hasta que no haya más registros
                     do {
 
-                        enviarUsuario(cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7));
+                        if(cursor.getInt(8)==3){
+                            enviarUsuario(cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getInt(8));
+                            DNI=cursor.getString(4);
+                            com.huaraz.luis.apphuaraz.Sql.Usuario demo = new com.huaraz.luis.apphuaraz.Sql.Usuario(cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),1);
+                            new AddEditLawyerTask().execute(demo);
+
+                        }
+
+
+
 
                     } while(cursor.moveToNext());
 
-                    UsuariosDbHelper.deletePedidos();
+
+
+
+                //    UsuariosDbHelper.deletePedidos();
                 }
 
 
@@ -186,9 +210,31 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
     }
 
 
-    public void enviarUsuario( String nombres, String apellidos, String dni, String contrasena, String correo, String telefono){
 
-        mAPIService.addUsuario(nombres,apellidos,dni,contrasena,correo,telefono,3).enqueue(new Callback<Usuario>() {
+    private class AddEditLawyerTask extends AsyncTask<com.huaraz.luis.apphuaraz.Sql.Usuario, Void, Boolean> {
+
+        @Override
+            protected Boolean doInBackground(com.huaraz.luis.apphuaraz.Sql.Usuario... lawyers) {
+            if (DNI != null) {
+                return UsuariosDbHelper.updateLawyerUser(lawyers[0], DNI) > 0;
+
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+          //  showLawyersScreen(result);
+        }
+
+    }
+
+
+    public void enviarUsuario( String nombres, String apellidos, String dni, String contrasena, String correo, String telefono,int tipo){
+
+        mAPIService = ApiUtils.getAPIService();
+        mAPIService.addUsuario(nombres,apellidos,dni,contrasena,correo,telefono,tipo).enqueue(new Callback<Usuario>() {
             @Override
             public void onResponse(Call<Usuario> call, Response<Usuario> response) {
 

@@ -49,26 +49,13 @@ public class MisPedidosOff extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_off, container, false);
-        boton_registrar_planta1 = (Button) root.findViewById(R.id.boton_registrar_planta1);
+     //   boton_registrar_planta1 = (Button) root.findViewById(R.id.boton_registrar_planta1);
 
 
 
-        pedidosDbHelper = new PedidosDbHelper(getActivity());
-
-        boton_registrar_planta1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(Conectividad.isOnline(getActivity().getApplicationContext())){
-                    loadLawyers();
-                }else{
-
-                }
+      //  pedidosDbHelper = new PedidosDbHelper(getActivity());
 
 
-
-            }
-        });
 
 
        return  root;

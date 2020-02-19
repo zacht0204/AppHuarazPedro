@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
 
 
-
+        System.out.println("Global.nombre");
 
         String[] parts = Global.nombre.split(" ");
         nombres=parts[0];
