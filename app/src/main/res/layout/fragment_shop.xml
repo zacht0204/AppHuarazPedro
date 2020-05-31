@@ -2,27 +2,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:paddingTop="8dp"
-    android:background="@color/accent_color"
     android:weightSum="1">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
 
-    <ListView
-        android:id="@+id/lista_noticia"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:alwaysDrawnWithCache="true"
-        android:dividerHeight="14dp"
-        android:horizontalSpacing="12dp"
-        android:scrollingCache="true"
-        android:smoothScrollbar="true"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="3dp"
+        <TextView
+            android:paddingTop="10dp"
+            android:id="@+id/desc_prod"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_marginLeft="0dp"
+            android:layout_centerHorizontal="true"
+            android:text=" PROXIMAMENTE EVENTOS DOCTOR VERDE"
+            android:textColor="@color/hintInfo"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textAppearance="?attr/textAppearanceListItem"
+            />
 
-        >
+    </LinearLayout>
 
-    </ListView>
+
 
 
 </FrameLayout>

@@ -1,8 +1,11 @@
 package com.huaraz.luis.apphuaraz;
 
-import android.content.Intent;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -12,6 +15,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.TextView;
 
 
@@ -21,7 +26,9 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar appbar;
     private DrawerLayout drawerLayout;
     private NavigationView navView;
+    private Context context = this;
     String  nombres=null;
+    Dialog customDialog = null;
     TextView nombrePerfil;
 
 
@@ -108,11 +115,11 @@ public class MainActivity extends AppCompatActivity {
                                 fragmentTransaction = true;
                                 break;
                             case R.id.menu_seccion_4:
-                                fragment = new ShopPet();
+                                fragment = new MisEventos();
                                 fragmentTransaction = true;
                                 break;
                             case R.id.menu_seccion_5:
-                                fragment = new MisPedidosOff();
+                                fragment = new MisConsejos();
                                 fragmentTransaction = true;
                                 break;
                             case R.id.menu_seccion_6:
@@ -163,4 +170,56 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onBackPressed()
+    {
+
+        customDialog = new Dialog(context);
+        //deshabilitamos el título por defecto
+        customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //obligamos al usuario a pulsar los botones para cerrarlo
+        customDialog.setCancelable(false);
+        //establecemos el contenido de nuestro dialog
+        customDialog.setContentView(R.layout.confirmacion);
+        TextView titulo = (TextView) customDialog.findViewById(R.id.titulo);
+        titulo.setText("DOCTOR VERDE");
+
+        TextView contenido = (TextView) customDialog.findViewById(R.id.contenido);
+        contenido.setText("¿Desea salir de Doctor Verde?");
+
+        ((Button) customDialog.findViewById(R.id.aceptar)).setOnClickListener(new View.OnClickListener() {
+
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View view)
+            {
+                customDialog.dismiss();
+                //Evento para matar la aplicacion
+               // llamar("926026797");
+                //  MainActivity.this.finish();
+                MainActivity.super.onBackPressed();
+            }///
+
+
+
+        });
+
+        ((Button) customDialog.findViewById(R.id.cancelar)).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view)
+            {
+                customDialog.dismiss();
+
+
+            }
+        });
+
+        customDialog.show();
+        // Añade más funciones si fuese necesario
+
+    }
+    //Cerrar Aplicacion
+
 }

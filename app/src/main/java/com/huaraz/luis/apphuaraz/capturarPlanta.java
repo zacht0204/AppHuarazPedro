@@ -1,19 +1,31 @@
 package com.huaraz.luis.apphuaraz;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +38,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.ActivityRecognition;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.huaraz.luis.apphuaraz.Model.Districts;
 import com.huaraz.luis.apphuaraz.Model.Demo;
 import com.huaraz.luis.apphuaraz.Model.Pedido;
@@ -51,7 +75,10 @@ import retrofit2.Response;
 
 //import com.pet.ebert.findme.Adaptador.ProfileApapter;
 
-public class capturarPlanta extends Fragment {
+public class capturarPlanta extends Fragment   implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener, ResultCallback<Status> {
 
     private APIService mAPIService;
     //Inovacaion del servicio rest
@@ -71,8 +98,6 @@ public class capturarPlanta extends Fragment {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     public String foto ="foto";
 
-
-
     public String Distrito;
     public  String Ciudad;
     TextView nombrePerfil;
@@ -86,6 +111,41 @@ public class capturarPlanta extends Fragment {
 
     ListView lv;
     int usuario;
+    //Varibles de GSP
+    private static final String TAG = capturarPlanta.class.getSimpleName();
+
+    private static final String LOCATION_KEY = "location-key";
+    private static final String ACTIVITY_KEY = "activity-key";
+    // Location API
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+    private LocationSettingsRequest mLocationSettingsRequest;
+    private Location mLastLocation;
+
+    //Variable global
+
+    String latitud="";
+    String longitud="";
+
+    // Activity Recognition API
+   // private ActivityDetectionBroadcastReceiver mBroadcastReceiver;
+
+
+
+    // UI
+    private TextView mLatitude;
+    private TextView mLongitude;
+    private ImageView mDectectedActivityIcon;
+
+    // Códigos de petición
+    public static final int REQUEST_LOCATION = 1;
+    public static final int REQUEST_CHECK_SETTINGS = 2;
+
+
+
+    ///***//
+
+
 
     public capturarPlanta() {
 
@@ -101,13 +161,8 @@ public class capturarPlanta extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View root = inflater.inflate(R.layout.fragment_info, container, false);
-
-
         usuario=Integer.parseInt(Global.usuario);
         System.out.println("Global de usuario de capturar planta"+usuario);
-
-        
-
         long date = System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/d HH:mm:ss ");
          dateString = sdf.format(date);
@@ -125,28 +180,35 @@ public class capturarPlanta extends Fragment {
 
         PedidosDbHelper = new PedidosDbHelper(getActivity());
 
-
-
-
-        // tilAddress = (TextInputLayout) root.findViewById(R.id.tilAddress);
-
-       // rbgSex = (RadioGroup) root.findViewById(R.id.rbgSexo);
-        // fabSaveMyInfo = (FloatingActionButton) root.findViewById(R.id.fabSaveMyInfo);
-
-       //Cargar el spinner
-        String[] Distritos = {"LINCE","SAN MIGUEL","INDEPENDENCIA","SURCO","SAN ISIDRO","LA MOLINA","SAN MARTIN DE PORRES","LOS OLIVOS","MIRAFLORES","MIRAFLORES","SAN MIGUEL","COMAS"};
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),R.layout.spinner_item,Distritos);
-       // arrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-       // spnDistrict.setAdapter(arrayAdapter);
-        // Creating adapter for spinner
-        /*
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, datos);
-
-        spnDistrict.setAdapter(adaptador);*/
-        //task.execute();
-        //Evento de pruebas
-
         mAPIService = ApiUtils.getAPIService();
+
+
+        //Metodos para llamar al gps
+        // Referencias UI
+
+
+
+        // Establecer punto de entrada para la API de ubicación
+        buildGoogleApiClient();
+
+        // Crear configuración de peticiones
+        createLocationRequest();
+
+        // Crear opciones de peticiones
+        buildLocationSettingsRequest();
+
+        // Verificar ajustes de ubicación actuales
+        checkLocationSettings();
+
+      //  mBroadcastReceiver = new ActivityDetectionBroadcastReceiver();
+
+        updateValuesFromBundle(savedInstanceState);
+
+
+
+
+
+        //Metodos para llamar al gps
         boton_registrar_planta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -173,12 +235,11 @@ public class capturarPlanta extends Fragment {
                     Toast.makeText(getActivity(),"Ingrese la informacion faltante",Toast.LENGTH_SHORT).show();
                 }
 
-
-
-               ;
             }
         });
        // loadProfile();
+
+
 
         imgOwnerPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -205,20 +266,12 @@ public class capturarPlanta extends Fragment {
 
             }
         });
-        /*
-        fabSaveMyInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                actualizardatos();
-            }
-        }
-        );*/
-
-
 
         return  root;
 
     }
+
+
     public void addFoto(){
 
 
@@ -250,11 +303,7 @@ public class capturarPlanta extends Fragment {
         byte[] bb3 = bos3.toByteArray();
         String petPhoto643 = Base64.encodeToString(bb3, 0);
 
-        /////
-
-
         List<Demo> friendsList = new ArrayList<Demo>();
-
 
         String distri=tilFullname.getEditText().getText().toString();
         String provincia=tilSurname.getEditText().getText().toString();
@@ -262,13 +311,10 @@ public class capturarPlanta extends Fragment {
         Demo demo = new Demo();
 
 
-
-
-
         if(isOnlineNet()){
 
             //Metodo Actualizado
-            mAPIService.addPedido(petPhoto64,petPhoto642,petPhoto643,distri,provincia,usuario,0,dateString,1,"2","2","2").enqueue(new Callback<Pedido>() {
+            mAPIService.addPedido(petPhoto64,petPhoto642,petPhoto643,distri,provincia,usuario,0,dateString,1,latitud,longitud,"1").enqueue(new Callback<Pedido>() {
                 @Override
                 public void onResponse(Call<Pedido> call, Response<Pedido> response) {
 
@@ -294,28 +340,13 @@ public class capturarPlanta extends Fragment {
 
 
                 System.out.println("global sin conexion");
-                com.huaraz.luis.apphuaraz.Sql.Pedido lawyer = new com.huaraz.luis.apphuaraz.Sql.Pedido("",petPhoto64, petPhoto642, petPhoto643, distri,provincia,Integer.parseInt(Global.IdDni),0,dateString,3,"","","");
+                com.huaraz.luis.apphuaraz.Sql.Pedido lawyer = new com.huaraz.luis.apphuaraz.Sql.Pedido("",petPhoto64, petPhoto642, petPhoto643, distri,provincia,Integer.parseInt(Global.IdDni),0,dateString,3,latitud,longitud,"3");
                 System.out.println("fecha sin conexion"+dateString);
                 new AddEditLawyerTask().execute(lawyer);
                 startAlert(25);
 
-
-                /*
-                System.out.println("no tiene internet");
-                com.huaraz.luis.apphuaraz.Sql.Pedido lawyer = new com.huaraz.luis.apphuaraz.Sql.Pedido("",petPhoto64, petPhoto642, petPhoto643, distri,provincia,usuario,0,dateString,1,"","","");
-
-                System.out.println("no tiene internet2");
-                new AddEditLawyerTask().execute(lawyer);
-                startAlert(25);*/
-
-
-
-
-            //activar alarma
-
-
         }
-       // friendsList.add(fotito);
+
 
 
     }
@@ -334,6 +365,60 @@ public class capturarPlanta extends Fragment {
         }
         return false;
     }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        // Obtenemos la última ubicación al ser la primera vez
+        processLastLocation();
+        // Iniciamos las actualizaciones de ubicación
+        startLocationUpdates();
+        // Y también las de reconocimiento de actividad
+     //   startActivityUpdates();
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d(TAG, "Conexión suspendida");
+        mGoogleApiClient.connect();
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(
+                getActivity(),
+                "Error de conexión con el código:" + connectionResult.getErrorCode(),
+                Toast.LENGTH_LONG)
+                .show();
+
+    }
+
+    @Override
+    public void onResult(@NonNull Status status) {
+        if (status.isSuccess()) {
+            Log.d(TAG, "Detección de actividad iniciada");
+
+        } else {
+            Log.e(TAG, "Error al iniciar/remover la detección de actividad: "
+                    + status.getStatusMessage());
+        }
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d(TAG, String.format("Nueva ubicación: (%s, %s)",
+                location.getLatitude(), location.getLongitude()));
+        latitud= String.valueOf(location.getLatitude());
+        longitud=String.valueOf(location.getLongitude());
+        System.out.println("Impresion de cordenadas"+latitud+longitud);
+        mLastLocation = location;
+        updateLocationUI();
+    }
+
+
+
 
     private class AddEditLawyerTask extends AsyncTask<com.huaraz.luis.apphuaraz.Sql.Pedido, Void, Boolean> {
 
@@ -383,126 +468,6 @@ public class capturarPlanta extends Fragment {
       //  Toast.makeText(getActivity().getApplicationContext(), "Alarm activada " + i + " seconds",Toast.LENGTH_LONG).show();
     }
 
-    public void addFoto1(){
-
-
-        //Agregar fotografia 1
-
-        BitmapDrawable drawable = (BitmapDrawable) imgOwnerPhoto.getDrawable();
-        Bitmap bitmap = drawable.getBitmap();
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
-        byte[] bb = bos.toByteArray();
-        String petPhoto64 = Base64.encodeToString(bb, 0);
-
-        //Agregar fotografia 2
-        BitmapDrawable drawable2 = (BitmapDrawable) imgOwnerPhoto2.getDrawable();
-        Bitmap bitmap2 = drawable2.getBitmap();
-
-        ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
-        bitmap2.compress(Bitmap.CompressFormat.PNG, 100, bos2);
-        byte[] bb2 = bos2.toByteArray();
-        String petPhoto642 = Base64.encodeToString(bb2, 0);
-
-        //Agregar fotgrafia 3
-        BitmapDrawable drawable3 = (BitmapDrawable) imgOwnerPhoto3.getDrawable();
-        Bitmap bitmap3 = drawable3.getBitmap();
-
-        ByteArrayOutputStream bos3 = new ByteArrayOutputStream();
-        bitmap3.compress(Bitmap.CompressFormat.PNG, 100, bos3);
-        byte[] bb3 = bos3.toByteArray();
-        String petPhoto643 = Base64.encodeToString(bb3, 0);
-
-        /////
-
-
-        List<Demo> friendsList = new ArrayList<Demo>();
-
-
-        String distri=tilFullname.getEditText().getText().toString();
-        String provincia=tilSurname.getEditText().getText().toString();
-
-        Demo demo = new Demo();
-
-        demo.setId_foto1(petPhoto64);
-        demo.setId_foto2(petPhoto642);
-        demo.setId_foto3(petPhoto643);
-        demo.setId_provincia(distri);
-        demo.setId_distrito(provincia);
-
-
-
-        System.out.println("ingreso 1");
-        // friendsList.add(fotito);
-        mAPIService.addFoto(petPhoto64,petPhoto642,petPhoto643,distri,provincia).enqueue(new Callback<Demo>() {
-            @Override
-            public void onResponse(Call<Demo> call, Response<Demo> response) {
-
-
-                if(response.isSuccessful()) {
-                    System.out.println("valor de ingreso");
-
-                }else {
-                    int statusCode  = response.code();
-                    System.out.println("2"+statusCode);
-                    // handle request errors depending on status code
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<Demo> call, Throwable t) {
-
-            }
-        });
-
-
-    }
-    public  void  loadProfile(){
-        final List<Demo> itemsLostPets = new ArrayList<>();
-        // final List<Pet> itemsPet = new ArrayList<>();
-        System.out.println("Demo Demo");
-        mAPIService.getFoto().enqueue(new Callback<List<Demo>>() {
-            @Override
-            public void onResponse(Call<List<Demo>> call, Response<List<Demo>> response) {
-
-
-                if(response.isSuccessful()) {
-                    for(int i=0;i<response.body().size();i++){
-                        itemsLostPets.add(response.body().get(i));
-                        // itemsPet.add(response.body().get(i).getPet());
-                         System.out.println("Luis"+itemsLostPets.get(i).getId_distrito().toString());
-                        // System.out.println("array ++"+itemsLostPets.get(i).getInfo()+"Name"+itemsPet.get(i).getName());
-
-
-                    }
-
-                }else {
-                    int statusCode  = response.code();
-                    System.out.println("2"+statusCode);
-                    // handle request errors depending on status code
-                }
-                if (getActivity()!=null){
-/*
-                    LostPet = new PetLostAdapter(getActivity(),itemsLostPets);
-                    lv.setAdapter(LostPet);*/
-
-                System.out.println("3");
-                }////codigo importante
-
-
-
-            }
-
-            @Override
-            public void onFailure(Call<List<Demo>> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-
-
-    }
 
 
     //Codigo de la fotografia
@@ -513,10 +478,7 @@ public class capturarPlanta extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_IMAGE_CAPTURE) {
-
-
             if (data != null) {
-
                 c++;
                 System.out.println("valor del contador="+c);
                 if (c == 1){
@@ -537,6 +499,24 @@ public class capturarPlanta extends Fragment {
                     imgOwnerPhoto3.setImageBitmap(imageBitmap);
                 }
             }
+        }else{
+
+            switch (requestCode) {
+                case REQUEST_CHECK_SETTINGS:
+                    switch (resultCode) {
+                        case Activity.RESULT_OK:
+                            Log.d(TAG, "El usuario permitió el cambio de ajustes de ubicación.");
+                            processLastLocation();
+                            startLocationUpdates();
+                            break;
+                        case Activity.RESULT_CANCELED:
+                            Log.d(TAG, "El usuario no permitió el cambio de ajustes de ubicación");
+                            break;
+                    }
+                    break;
+            }
+
+
         }
 
     }
@@ -550,129 +530,179 @@ public class capturarPlanta extends Fragment {
         }
     }
 
+    //Codigo de inicio del gps
+    @Override
+    public  void onPause() {
+        super.onPause();
+        if (mGoogleApiClient.isConnected()) {
+            stopLocationUpdates();
+         //   stopActivityUpdates();
+        }
+
+   //     LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mGoogleApiClient.isConnected()) {
+            startLocationUpdates();
+         //   startActivityUpdates();
+        }
+
+
+
+    }
+    //Codigo de inicio del gps
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        // Protegemos la ubicación actual antes del cambio de configuración
+        outState.putParcelable(LOCATION_KEY, mLastLocation);
+      //  outState.putInt(ACTIVITY_KEY, mImageResource);
+        super.onSaveInstanceState(outState);
+    }
 
 
 
 
+    //Metodos para aplicar el gps de configuracion
+    private synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .addApi(ActivityRecognition.API)
+                .enableAutoManage(getActivity(), this)
+                .build();
+    }
 
 
+    private void createLocationRequest() {
+        mLocationRequest = new LocationRequest()
+                .setInterval(1000)
+                .setFastestInterval(1000/2)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
 
 
+    private void buildLocationSettingsRequest() {
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(mLocationRequest)
+                .setAlwaysShow(true);
+        mLocationSettingsRequest = builder.build();
+    }
 
 
+    private void checkLocationSettings() {
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(
+                        mGoogleApiClient, mLocationSettingsRequest
+                );
 
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(@NonNull LocationSettingsResult result) {
+                Status status = result.getStatus();
 
-
-    //
-        public void actualizardatos(){
-            int race =0;
-            if (!ValidationUtils.isEmpty(tilFullname, tilSurname)) {
-                 /*
-                String distrito =spnDistrict.getSelectedItem().toString();
-
-
-                if(distrito.equals("LINCE")){
-                    race=1;
-                }else if (distrito.equals("SAN MIGUEL")){
-                    race=2;
-                }
-                else if (distrito.equals("INDEPENDENCIA")){
-                    race=3;
-                }
-                else if (distrito.equals("SURCO")){
-                    race=4;
-                }
-                else if (distrito.equals("SAN ISIDRO")){
-                    race=5;
-                }
-                else if (distrito.equals("LA MOLINA")){
-                    race=6;
-                }else if (distrito.equals("SAN MARTIN DE PORRES")){
-                    race=7;
-
-                }else if (distrito.equals("LOS OLIVOS")){
-                    race=8;
-                }
-                else if (distrito.equals("MIRAFLORES")){
-                    race=9;
-                }
-                else if (distrito.equals("MIRAFLORES")){
-                    race=10;
-                }
-                else if (distrito.equals("SAN MIGUEL")){
-                    race=11;
-                }
-                else if (distrito.equals("COMAS")){
-                    race=12;
-                }
-                */
-
-
-              //  int sexSelectedId = rbgSex.getCheckedRadioButtonId();
-               // RadioButton rbtnSexo = (RadioButton) getActivity().findViewById(sexSelectedId);
-
-
-
-                String name = tilFullname.getEditText().getText().toString().trim();
-                String lastname = tilSurname.getEditText().getText().toString().trim();
-                //String address = tilAddress.getEditText().getText().toString().trim();
-               // String sex = rbtnSexo.getText().toString().trim();
-
-
-                int user1=loginPet.id_user;
-
-                String user= String.valueOf(user1);
-
-
-
-                BitmapDrawable drawable = (BitmapDrawable) imgOwnerPhoto.getDrawable();
-                Bitmap bitmap = drawable.getBitmap();
-
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 75, bos);
-                byte[] bb = bos.toByteArray();
-                String petPhoto64 = Base64.encodeToString(bb, 0);
-                int idUser= Integer.parseInt(user);
-                Demo usuario = new Demo();
-                /*
-                usuario.setName(name);
-                usuario.setLastname(lastname);
-                //usuario.setAddress(address);
-                //usuario.setSex(sex);
-                usuario.setUserId(idUser);
-                usuario.setPicture(petPhoto64);
-
-
-
-                usuario.setDistrictId(race);
-                */
-
-            mAPIService.ActualizarUsuario(user,usuario).enqueue(new Callback<UserResponse>() {
-                @Override
-                public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                    if(response.isSuccessful()) {
-
-                        Toast.makeText(getContext(), "Se actualizaron los datos ",
-                                Toast.LENGTH_LONG).show();
-                        Intent in = new Intent(getContext(),MainActivity.class);
-
-                        startActivity(in);
-
-
-                    }else {
-                        int statusCode  = response.code();
-                        System.out.println("codigoError"+statusCode);
-                        // handle request errors depending on status code
-                    }
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        Log.d(TAG, "Los ajustes de ubicación satisfacen la configuración.");
+                        startLocationUpdates();
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        try {
+                            Log.d(TAG, "Los ajustes de ubicación no satisfacen la configuración. " +
+                                    "Se mostrará un diálogo de ayuda.");
+                            status.startResolutionForResult(
+                                    getActivity(),
+                                    REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException e) {
+                            Log.d(TAG, "El Intent del diálogo no funcionó.");
+                            // Sin operaciones
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        Log.d(TAG, "Los ajustes de ubicación no son apropiados.");
+                        break;
 
                 }
+            }
+        });
+    }
 
-                @Override
-                public void onFailure(Call<UserResponse> call, Throwable t) {
+    private void startLocationUpdates() {
+        if (isLocationPermissionGranted()) {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(getActivity(), "\n" +
+                        "Primero habilite el ACCESO A LA UBICACIÓN en la configuración.", Toast.LENGTH_LONG).show();
+                return;
+            }
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
+        } else {
+            manageDeniedPermission();
+        }
+    }
 
-                }
-            });
+    private boolean isLocationPermissionGranted() {
+        int permission = ActivityCompat.checkSelfPermission(
+                getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        return permission == PackageManager.PERMISSION_GRANTED;
+    }
+    private void manageDeniedPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION)) {
+            // Aquí muestras confirmación explicativa al usuario
+            // por si rechazó los permisos anteriormente
+        } else {
+            ActivityCompat.requestPermissions(
+                    getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_LOCATION);
+        }
+    }
+
+    private void updateValuesFromBundle(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(LOCATION_KEY)) {
+                mLastLocation = savedInstanceState.getParcelable(LOCATION_KEY);
+
+                updateLocationUI();
             }
 
         }
+    }
+
+    private void updateLocationUI() {
+        String latitud =(String.valueOf(mLastLocation.getLatitude()));
+        String longitud=(String.valueOf(mLastLocation.getLongitude()));
+    }
+
+    private void processLastLocation() {
+        getLastLocation();
+        if (mLastLocation != null) {
+            updateLocationUI();
+        }
+    }
+    private void getLastLocation() {
+        if (isLocationPermissionGranted()) {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(getActivity(), "\n" +
+                        "Primero habilite el ACCESO A LA UBICACIÓN en la configuración.", Toast.LENGTH_LONG).show();
+                return;
+            }
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        } else {
+            manageDeniedPermission();
+        }
+    }
+
+
+    private void stopLocationUpdates() {
+        LocationServices.FusedLocationApi
+                .removeLocationUpdates(mGoogleApiClient, this);
+    }
+
+
 }

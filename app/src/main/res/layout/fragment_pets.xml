@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="8dp"
+    android:background="#FFFFFF"
     android:weightSum="1">
 
     <ImageView
@@ -14,11 +15,13 @@
 
 
     <ListView
+        android:paddingTop="5dp"
         android:id="@+id/lista_demos"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:background="#FFFFFF"
         android:alwaysDrawnWithCache="true"
-        android:dividerHeight="14dp"
+        android:dividerHeight="3dp"
         android:horizontalSpacing="12dp"
         android:scrollingCache="true"
         android:smoothScrollbar="true"

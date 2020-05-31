@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@color/accent_color"
     tools:context=".MainActivity">
 
     <!-- Contenido de la actividad -->
@@ -18,7 +19,10 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         android:layout_gravity="start"
+        android:background="@color/accent_color"
         app:headerLayout="@layout/header_navview"
+        app:itemIconTint="@color/color_menu"
+        app:itemBackground="@color/accent_color"
         app:menu="@menu/menu_navview" />
 
 </android.support.v4.widget.DrawerLayout>

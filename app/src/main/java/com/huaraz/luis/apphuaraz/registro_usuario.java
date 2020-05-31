@@ -7,9 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +32,8 @@ import com.huaraz.luis.apphuaraz.Sql.UsuariosDbHelper;
 import com.huaraz.luis.apphuaraz.alarm.MyBroadcastReceiver;
 
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,6 +45,7 @@ public class registro_usuario extends AppCompatActivity {
     private Toolbar toolbar;
     Button btnRegistrar;
     private UsuariosDbHelper UsuariosDbHelper;
+    String validador;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +56,7 @@ public class registro_usuario extends AppCompatActivity {
         id_nombres = (TextInputLayout) findViewById(R.id.id_nombres);
         id_apellidos = (TextInputLayout) findViewById(R.id.id_apellidos);
         id_dni = (TextInputLayout) findViewById(R.id.id_dni);
+
         id_contrasena = (TextInputLayout) findViewById(R.id.id_contrasena);
         id_confirmar_contrasena = (TextInputLayout) findViewById(R.id.id_confirmar_contrasena);
         id_correo = (TextInputLayout) findViewById(R.id.id_correo);
@@ -70,7 +76,7 @@ public class registro_usuario extends AppCompatActivity {
         btnRegistrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                btnRegistrar.setEnabled(true);
                 signUp();
 
             }
@@ -80,6 +86,8 @@ public class registro_usuario extends AppCompatActivity {
     }
 
     private void signUp() {
+
+        btnRegistrar.setEnabled(true);
 
         if(!ValidationUtils.isEmpty(id_nombres, id_apellidos, id_dni, id_telefono,id_contrasena,id_confirmar_contrasena,id_correo)) {
 
@@ -115,7 +123,6 @@ public class registro_usuario extends AppCompatActivity {
             String correo = id_correo.getEditText().getText().toString().trim();
 
 
-
             Usuario usuario = new Usuario();
 
             usuario.setNombres(nombres);
@@ -126,62 +133,96 @@ public class registro_usuario extends AppCompatActivity {
             usuario.setTelefono(telefono);
             usuario.setTipo(2);  //Registro tipo dos es tecnico
 
-            System.out.println("entreo" +pass+passConfirm);
+            //Cargando Informacion
+
+            Toast toast = new Toast(getApplicationContext());
+
+            LayoutInflater inflater = getLayoutInflater();
+            View layout = inflater.inflate(R.layout.toast_layout,
+                    (ViewGroup) findViewById(R.id.lytLayout));
+
+            TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
+            txtMsg.setText("¡Registrando Informacion! ");
+
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setView(layout);
+            toast.show();
 
             if(isOnlineNet()){
+                System.out.println("Iniciando llamanda rest");
 
-            // mAPIService.addUsuario
-            //Registro de usuario de tecnico
-            mAPIService.addUsuario(nombres,apellidos,dni,contrasena,correo,telefono,1).enqueue(new Callback<Usuario>() {
-                @Override
-                public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                        //Registro de usuario de tecnico
+                mAPIService.getSocio(nombres,apellidos,dni,contrasena,correo,telefono,1).enqueue(new Callback<Usuario>() {
+                            @Override
+                            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
 
-                    if(response.isSuccessful()) {
+                                if(response.isSuccessful()) {
 
+                                   if(response.body().getRespuesta().equals("si")){
+                                       Toast toast = new Toast(getApplicationContext());
 
+                                       LayoutInflater inflater = getLayoutInflater();
+                                       View layout = inflater.inflate(R.layout.toast_layout,
+                                               (ViewGroup) findViewById(R.id.lytLayout));
 
-
-                        Toast toast = new Toast(getApplicationContext());
-
-                        LayoutInflater inflater = getLayoutInflater();
-                        View layout = inflater.inflate(R.layout.toast_layout,
-                                (ViewGroup) findViewById(R.id.lytLayout));
-
-                        TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
-                        txtMsg.setText("¡Registro De Usuario Exitoso! ");
-
-                        toast.setDuration(Toast.LENGTH_LONG);
-                        toast.setView(layout);
-                        toast.show();
-                        System.out.println("Se registro Usuario Tecnico");
-
-                        Intent i = new Intent(registro_usuario.this,loginPet.class);
-                        startActivity(i);
+                                       TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
+                                       txtMsg.setText("¡El DNI, ya se encuentra registrado! ");
+                                       toast.setDuration(Toast.LENGTH_LONG);
+                                       toast.setView(layout);
+                                       toast.show();
+                                       id_dni.getEditText().setText("");
 
 
 
-                    }else {
-                        int statusCode  = response.code();
-                        System.out.println("2"+statusCode);
-                        // handle request errors depending on status code
-                    }
 
-                }
+                                   }else{
 
-                @Override
-                public void onFailure(Call<Usuario> call, Throwable t) {
+                                       Toast toast = new Toast(getApplicationContext());
 
-                }
-            });
-                ///Modo Seguro
-                com.huaraz.luis.apphuaraz.Sql.Usuario Usuario = new com.huaraz.luis.apphuaraz.Sql.Usuario(nombres,apellidos,dni,contrasena,correo,telefono,3);
-                new AddEditUserTask().execute(Usuario);
+                                       LayoutInflater inflater = getLayoutInflater();
+                                       View layout = inflater.inflate(R.layout.toast_layout,
+                                               (ViewGroup) findViewById(R.id.lytLayout));
+
+                                       TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
+                                       txtMsg.setText("¡Registro de Usuario Exitoso! ");
+
+                                       toast.setDuration(Toast.LENGTH_LONG);
+                                       toast.setView(layout);
+                                       toast.show();
+
+
+                                       Intent i = new Intent(registro_usuario.this,loginPet.class);
+                                       startActivity(i);
+
+
+                                   }
+
+                                   System.out.println("llega de insert"+response.body().getRespuesta());
+
+                                    System.out.println("Se registro Usuario Tecnico");
+
+
+
+                                }else {
+                                    int statusCode  = response.code();
+                                    System.out.println("2"+statusCode);
+                                    // handle request errors depending on status code
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<Usuario> call, Throwable t) {
+
+                            }
+                        });
+
+
+  //   com.huaraz.luis.apphuaraz.Sql.Usuario Usuario = new com.huaraz.luis.apphuaraz.Sql.Usuario(nombres,apellidos,dni,contrasena,correo,telefono,3);
+             //   new AddEditUserTask().execute(Usuario);
 
             }else{
-
-
                 //No tiene internet
-
                 com.huaraz.luis.apphuaraz.Sql.Usuario Usuario = new com.huaraz.luis.apphuaraz.Sql.Usuario(nombres,apellidos,dni,contrasena,correo,telefono,3);
                 new AddEditUserTask().execute(Usuario);
              //   startAlertUsuario(25);
@@ -264,7 +305,7 @@ public class registro_usuario extends AppCompatActivity {
 
 
       //  int interval = 1000*60*60*2;
-        int interval = 1000*25;
+        int interval = 1000*60*5;
 
         Intent intent = new Intent(this, MyBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
@@ -274,5 +315,10 @@ public class registro_usuario extends AppCompatActivity {
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() ,interval, pendingIntent);
         //  Toast.makeText(getActivity().getApplicationContext(), "Alarm activada " + i + " seconds",Toast.LENGTH_LONG).show();
     }
-}
+
+
+
+      }
+
+
 

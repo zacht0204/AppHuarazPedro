@@ -24,7 +24,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ShopPet extends Fragment {
+public class MisEventos extends Fragment {
 
     private APIService mAPIService;
 
@@ -39,7 +39,7 @@ public class ShopPet extends Fragment {
 
     ListView lv;
 
-    public ShopPet() {
+    public MisEventos() {
         // Required empty public constructor
     }
 
@@ -54,6 +54,7 @@ public class ShopPet extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_shop, container, false);
 
+  /*
         Noticias no = new Noticias();
         Noticias n1 = new Noticias();
         Noticias n2 = new Noticias();
@@ -98,7 +99,7 @@ public class ShopPet extends Fragment {
         LostPet = new NoticiaAdapter(getActivity(),itemsPets);
         lv.setAdapter(LostPet);
 
-
+  */
 
         ///Demo de valor bueno
 

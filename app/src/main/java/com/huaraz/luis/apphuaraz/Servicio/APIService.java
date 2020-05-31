@@ -103,7 +103,7 @@ public interface APIService {
    //Registro de usuario tecnico
    @FormUrlEncoded
    @POST("usuario.php")
-   Call<Usuario> addUsuario(@Field("nombres") String nombres,
+   Call<List<Usuario> >addUsuario(@Field("nombres") String nombres,
                             @Field("apellidos") String apellidos,
                             @Field("dni") String dni,
                             @Field("contrasena") String contrasena,
@@ -115,6 +115,11 @@ public interface APIService {
    //login del app de huaraz
    @GET("usuario.php?")
    Call<Usuario>  getlogin(@Query("dni") String dni);
+
+   //Registrar un usuarioi
+
+   @GET("usuario.php?")
+   Call<Usuario> getSocio(@Query("nombres") String nombres, @Query("apellidos") String apellidos, @Query("dni") String dni, @Query("contrasena") String contrasena, @Query("correo") String correo, @Query("telefono") String telefono,@Query("tipo") int tipo);
 
    ////////////////////////////////////////
 

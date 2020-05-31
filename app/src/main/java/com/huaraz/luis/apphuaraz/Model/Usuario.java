@@ -40,6 +40,18 @@ private String telefono;
 private int tipo;
 
 
+@SerializedName("respuesta")
+@Expose
+private String  respuesta;
+
+    public String getRespuesta() {
+        return respuesta;
+    }
+
+    public void setRespuesta(String respuesta) {
+        this.respuesta = respuesta;
+    }
+
     public int getId_usuario() {
         return id_usuario;
     }

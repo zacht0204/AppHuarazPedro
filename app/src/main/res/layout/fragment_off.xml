@@ -16,7 +16,7 @@
         android:layout_height="100dp"
         android:layout_marginLeft="0dp"
         android:layout_centerHorizontal="true"
-        android:text=" CONSEJOS DEL MES PARA TUS CULTIVOS  "
+        android:text=" PROXIMAMENTE CONSEJOS PARA TUS CULTIVOS "
         android:textColor="@color/hintInfo"
         android:textStyle="bold"
         android:gravity="center"

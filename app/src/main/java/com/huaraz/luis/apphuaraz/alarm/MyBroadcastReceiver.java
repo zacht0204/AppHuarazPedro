@@ -1,35 +1,20 @@
 package com.huaraz.luis.apphuaraz.alarm;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.huaraz.luis.apphuaraz.Adaptador.StoreAdapter;
-import com.huaraz.luis.apphuaraz.Global;
-import com.huaraz.luis.apphuaraz.MisPedidosOff;
-import com.huaraz.luis.apphuaraz.Model.Demo;
 import com.huaraz.luis.apphuaraz.Model.Pedido;
 import com.huaraz.luis.apphuaraz.Model.Usuario;
-import com.huaraz.luis.apphuaraz.R;
 import com.huaraz.luis.apphuaraz.Servicio.APIService;
 import com.huaraz.luis.apphuaraz.Servicio.ApiUtils;
 import com.huaraz.luis.apphuaraz.Sql.PedidosDbHelper;
 import com.huaraz.luis.apphuaraz.Sql.UsuariosDbHelper;
-import com.huaraz.luis.apphuaraz.Sql.UsuariosDbHelper;
-import com.huaraz.luis.apphuaraz.loginPet;
-import com.huaraz.luis.apphuaraz.registro_usuario;
-
-import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -234,7 +219,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
     public void enviarUsuario( String nombres, String apellidos, String dni, String contrasena, String correo, String telefono,int tipo){
 
         mAPIService = ApiUtils.getAPIService();
-        mAPIService.addUsuario(nombres,apellidos,dni,contrasena,correo,telefono,tipo).enqueue(new Callback<Usuario>() {
+        mAPIService.getSocio(nombres,apellidos,dni,contrasena,correo,telefono,tipo).enqueue(new Callback<Usuario>() {
             @Override
             public void onResponse(Call<Usuario> call, Response<Usuario> response) {
 
@@ -258,6 +243,8 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 
             }
         });
+
+
     }
 
 }

@@ -24,7 +24,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MisPedidosOff extends Fragment {
+public class MisConsejos extends Fragment {
 
     private APIService mAPIService;
     private PedidosDbHelper pedidosDbHelper;
@@ -35,7 +35,7 @@ public class MisPedidosOff extends Fragment {
     private Button boton_registrar_planta1;
     ListView lv;
    
-    public MisPedidosOff() {
+    public MisConsejos() {
         // Required empty public constructor
     }
 

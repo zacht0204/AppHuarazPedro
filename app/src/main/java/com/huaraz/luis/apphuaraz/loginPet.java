@@ -1,3 +1,4 @@
+
 package com.huaraz.luis.apphuaraz;
 
 import android.app.Dialog;
@@ -62,7 +63,7 @@ public class loginPet extends AppCompatActivity {
     String sinConexion;
 
     String apellidosoff=null;
-  boolean respuesta;
+    boolean respuesta;
     //Datos de usuario
 
 
@@ -88,25 +89,22 @@ public class loginPet extends AppCompatActivity {
 
         fab=(FloatingActionButton)findViewById(R.id.fab);
 
-       // fab=(FloatingActionButton)findViewById(R.id.fab);
+        // fab=(FloatingActionButton)findViewById(R.id.fab);
         input_usuario = (EditText)findViewById(R.id.usuario);
         input_contrasena  = (EditText)findViewById(R.id.contrasena);
 
         usuariosDbHelper = new UsuariosDbHelper(getApplicationContext());
 
-      //  mAPIService = ApiUtils.getAPIService();
+        //  mAPIService = ApiUtils.getAPIService();
         // fab=(Button)findViewById(R.id.fab);
     /*
         if(isOnlineNet()==false){
             Toast toast = new Toast(getApplicationContext());
-
             LayoutInflater inflater = getLayoutInflater();
             View layout = inflater.inflate(R.layout.toast_layout,
                     (ViewGroup) findViewById(R.id.lytLayout));
-
             TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
             txtMsg.setText("¡Activar su Servicio de Internet! ");
-
             toast.setDuration(Toast.LENGTH_SHORT);
             toast.setView(layout);
             toast.show();
@@ -130,6 +128,8 @@ public class loginPet extends AppCompatActivity {
 
                     input_usuario.setText("");
                     input_contrasena.setText("");
+                    input_usuario.setEnabled(true);
+                    input_contrasena.setEnabled(true);
                     getIngreso(usuario,contrasena);
 
                 };
@@ -145,7 +145,7 @@ public class loginPet extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-               customDialog = new Dialog(context);
+                customDialog = new Dialog(context);
                 //deshabilitamos el título por defecto
                 customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 //obligamos al usuario a pulsar los botones para cerrarlo
@@ -207,8 +207,6 @@ public class loginPet extends AppCompatActivity {
                 customDialog.setCancelable(false);
               //  customDialog = new Dialog(this,R.style.Theme_Dialog_Translucent);
                 //deshabilitamos el título por defecto
-
-
                 TextView titulo = (TextView) customDialog.findViewById(R.id.titulo);
                 titulo.setText("COOPERATIVA CACOP");
                 TextView texto = (TextView) customDialog.findViewById(R.id.texto);
@@ -221,39 +219,31 @@ public class loginPet extends AppCompatActivity {
                     {
                         customDialog.dismiss();
                         llamar("(01)4247133");
-
-
                     }
                 });
                 ((Button) customDialog.findViewById(R.id.cancelar)).setOnClickListener(new OnClickListener() {
-
                     @Override
                     public void onClick(View view)
                     {
                         customDialog.dismiss();
-
-
                     }
                 });
                 customDialog.show();*/
 
-             //   customDialog = new Dialog(context);
-                //deshabilitamos el título por defecto
-               // customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                //obligamos al usuario a pulsar los botones para cerrarlo
-           //     customDialog.setCancelable(false);
-                //establecemos el contenido de nuestro dialog
+        //   customDialog = new Dialog(context);
+        //deshabilitamos el título por defecto
+        // customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //obligamos al usuario a pulsar los botones para cerrarlo
+        //     customDialog.setCancelable(false);
+        //establecemos el contenido de nuestro dialog
 
                 /*
                 customDialog.setContentView(R.layout.confirmacion);
                 TextView titulo = (TextView) customDialog.findViewById(R.id.titulo);
                 titulo.setText("COOPERATIVA CACOP");
-
                 TextView contenido = (TextView) customDialog.findViewById(R.id.contenido);
                 contenido.setText("¿Llamar a la Cooperativa Cacop?");
-
                 ((Button) customDialog.findViewById(R.id.aceptar)).setOnClickListener(new View.OnClickListener() {
-
                     @Override
                     public void onClick(View view)
                     {
@@ -262,27 +252,19 @@ public class loginPet extends AppCompatActivity {
                         llamar("(01)4247133");
                         //  MainActivity.this.finish();
                     }///
-
-
-
                 });
-
                 ((Button) customDialog.findViewById(R.id.cancelar)).setOnClickListener(new View.OnClickListener() {
-
                     @Override
                     public void onClick(View view)
                     {
                         customDialog.dismiss();
-
-
                     }
                 });
-
                 customDialog.show();
                 */
-          //  }*/
+        //  }*/
 
-       // });*/
+        // });*/
 
 
 
@@ -324,64 +306,99 @@ public class loginPet extends AppCompatActivity {
 
         }
 
-         return valor;
+        return valor;
     }
-        //metoo de login
+    //metoo de login
     public void getIngreso(String usuario , String contrasena1){
 
         int tipo=0;
 
+        Toast toast = new Toast(getApplicationContext());
+
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_layout,
+                (ViewGroup) findViewById(R.id.lytLayout));
+
+        TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
+        txtMsg.setText("Cargando Informacion");
+
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+
         contrasena=contrasena1;
         if(isOnlineNet()==true){
 
-        mAPIService = ApiUtils.getAPIService();
-        try {
+            mAPIService = ApiUtils.getAPIService();
+            try {
 
 
-            Log.d("Ingreso del servidor", "realizando Pediticion");
+                Log.d("Ingreso del servidor", "realizando Pediticion");
 
-            mAPIService.getlogin(usuario).enqueue(new Callback<Usuario>() {
-                @Override
-                public void onResponse(Call<Usuario> call, Response<Usuario> response) {
-                    Log.d("Ingreso del servidor", "valor de peticion");
+                mAPIService.getlogin(usuario).enqueue(new Callback<Usuario>() {
+                    @Override
+                    public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                        Log.d("Ingreso del servidor", "valor de peticion");
 
-                    if(response.isSuccessful()) {
-                        per.setId_usuario(response.body().getId_usuario());
-                        per.setNombres(response.body().getNombres());
-                        per.setApellidos(response.body().getApellidos());
-                        per.setDni(response.body().getDni());
-                        per.setContrasena(response.body().getContrasena());
-                        per.setTipo(response.body().getTipo());
-
-
-                        if((per.getContrasena().equals(contrasena))&&(1==per.getTipo())||(per.getContrasena().equals(contrasena))&&(3==per.getTipo())){
+                        if(response.isSuccessful()) {
+                            per.setId_usuario(response.body().getId_usuario());
+                            per.setNombres(response.body().getNombres());
+                            per.setApellidos(response.body().getApellidos());
+                            per.setDni(response.body().getDni());
+                            per.setContrasena(response.body().getContrasena());
+                            per.setTipo(response.body().getTipo());
 
 
-                            Global.usuario=(String.valueOf(per.getDni()));
-                            Global.nombre=per.getNombres();
-                            System.out.println("Global con internet"+Global.usuario);
+                            if((per.getContrasena().equals(contrasena))&&(1==per.getTipo())||(per.getContrasena().equals(contrasena))&&(3==per.getTipo())){
 
 
-                            Toast toast = new Toast(getApplicationContext());
+                                Global.usuario=(String.valueOf(per.getDni()));
+                                Global.nombre=per.getNombres();
+                                System.out.println("Global con internet"+Global.usuario);
 
-                            LayoutInflater inflater = getLayoutInflater();
-                            View layout = inflater.inflate(R.layout.toast_layout,
-                                    (ViewGroup) findViewById(R.id.lytLayout));
 
-                            TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
-                            txtMsg.setText("Bienvenido :"+per.getNombres()+" "+per.getApellidos());
+                                Toast toast = new Toast(getApplicationContext());
 
-                            toast.setDuration(Toast.LENGTH_LONG);
-                            toast.setView(layout);
-                            toast.show();
-                            System.out.println("Bienvenido"+per.getNombres()+per.getApellidos());
+                                LayoutInflater inflater = getLayoutInflater();
+                                View layout = inflater.inflate(R.layout.toast_layout,
+                                        (ViewGroup) findViewById(R.id.lytLayout));
 
-                            Intent in = new Intent(loginPet.this,MainActivity.class);
-                          //  in.putExtra("nombre",per.getNombres());
+                                TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
+                                txtMsg.setText("Bienvenido :"+per.getNombres()+" "+per.getApellidos());
 
-                            startActivity(in);
+                                toast.setDuration(Toast.LENGTH_LONG);
+                                toast.setView(layout);
+                                toast.show();
+                                System.out.println("Bienvenido"+per.getNombres()+per.getApellidos());
 
-                        }else{
+                                Intent in = new Intent(loginPet.this,MainActivity.class);
+                                //  in.putExtra("nombre",per.getNombres());
+
+                                startActivity(in);
+
+                            }else{
+
+                                Toast toast = new Toast(getApplicationContext());
+
+                                LayoutInflater inflater = getLayoutInflater();
+                                View layout = inflater.inflate(R.layout.toast_layout,
+                                        (ViewGroup) findViewById(R.id.lytLayout));
+
+                                TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
+                                txtMsg.setText("¡Contraseña Incorrecta! ");
+
+                                toast.setDuration(Toast.LENGTH_LONG);
+                                toast.setView(layout);
+                                toast.show();
+                                System.out.println("Se registro Usuario Tecnico");
+
+
+                            }
+
+
+
+
+                        } else {
 
                             Toast toast = new Toast(getApplicationContext());
 
@@ -396,42 +413,37 @@ public class loginPet extends AppCompatActivity {
                             toast.setView(layout);
                             toast.show();
                             System.out.println("Se registro Usuario Tecnico");
-
-
+                            int statusCode  = response.code();
+                            System.out.println("2"+statusCode);
+                            // handle request errors depending on status code
                         }
 
-
-
-
-                    } else {
-                        int statusCode  = response.code();
-                        System.out.println("2"+statusCode);
-                        // handle request errors depending on status code
                     }
 
-                }
-
-                @Override
-                public void onFailure(Call<Usuario> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<Usuario> call, Throwable t) {
 
 
 
-                }
+                    }
 
 
-            });
+                });
 
-            Log.d("Salida del servidor", "Proyeccion lenta");
+                Log.d("Salida del servidor", "Proyeccion lenta");
+
+               // System.out.println("Se registro Usuario Tecnico");
 
 
 
 
 
-        }catch (Exception e){
 
-            e.printStackTrace();
-            System.out.println("Error del servidor");
-        }
+            }catch (Exception e){
+
+                e.printStackTrace();
+                System.out.println("Error del servidor");
+            }
 
         }else{
 
@@ -444,42 +456,30 @@ public class loginPet extends AppCompatActivity {
 
         }
       /*
-
         mAPIService.getIngreso(peticion).enqueue(new Callback<UserResponse>() {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-
-
                 if(response.isSuccessful()) {
                     String nombre=response.body().getUsername();
                    if (nombre!=null){
-
                         Toast.makeText(getApplicationContext(), "Bienvenido "+response.body().getUsername()+" :)",
                                 Toast.LENGTH_LONG).show();
                        id_user=response.body().getId();
                        correo_user=response.body().getEmail();
                         Intent in = new Intent(loginPet.this,MainActivity.class);
-
                         startActivity(in);
-
                     }else{
-
                        Toast.makeText(getApplicationContext(), "Ingreso la informacion Correcta",
                                Toast.LENGTH_LONG).show();
                     }
-
-
-
                 }else {
                     int statusCode  = response.code();
                     System.out.println("codigoError"+statusCode);
                     // handle request errors depending on status code
                 }
             }
-
             @Override
             public void onFailure(Call<UserResponse> call, Throwable t) {
-
             }
         });*/
 
@@ -558,7 +558,7 @@ if (i.resolveActivity(getPackageManager()) != null) {
                         sinConexion=cursor.getString(8);
 
 //                        System.out.println("datos sin conexion"+usuariSinConexion+contrasenaSinConexion);
-                   //     System.out.println("dni"+sinConexion);
+                        //     System.out.println("dni"+sinConexion);
 
 
 
@@ -595,7 +595,7 @@ if (i.resolveActivity(getPackageManager()) != null) {
 
 
 
-                       // usuario
+                        // usuario
                         //contrasena
 
                     }else{
@@ -617,7 +617,7 @@ if (i.resolveActivity(getPackageManager()) != null) {
 
 
                     }
-                  //  usuariosDbHelper.deletePedidos();
+                    //  usuariosDbHelper.deletePedidos();
                 }
 
 
@@ -626,8 +626,31 @@ if (i.resolveActivity(getPackageManager()) != null) {
                 // Mostrar empty state
                 System.out.println("base de datos vacia");
 
+                Toast toast = new Toast(getApplicationContext());
+
+                LayoutInflater inflater = getLayoutInflater();
+                View layout = inflater.inflate(R.layout.toast_layout,
+                        (ViewGroup) findViewById(R.id.lytLayout));
+
+                TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
+                txtMsg.setText("¡Verificar Usuario o Contraseña /Comuniquese a nuestro numero de atencion!");
+
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
+
             }
         }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+
+        super.onBackPressed();
+        //  System.exit(0);
+        // Añade más funciones si fuese necesario
+      //  super.onBackPressed();  // Invoca al método
     }
 
 
