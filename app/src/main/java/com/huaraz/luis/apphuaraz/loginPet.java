@@ -335,7 +335,7 @@ public class loginPet extends AppCompatActivity {
 
                 Log.d("Ingreso del servidor", "realizando Pediticion");
 
-                mAPIService.getlogin(usuario).enqueue(new Callback<Usuario>() {
+                mAPIService.getlogin(usuario,1).enqueue(new Callback<Usuario>() {
                     @Override
                     public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                         Log.d("Ingreso del servidor", "valor de peticion");
@@ -372,7 +372,7 @@ public class loginPet extends AppCompatActivity {
                                 System.out.println("Bienvenido"+per.getNombres()+per.getApellidos());
 
                                 Intent in = new Intent(loginPet.this,MainActivity.class);
-                                //  in.putExtra("nombre",per.getNombres());
+                                in.putExtra("nombre",per.getNombres());
 
                                 startActivity(in);
 

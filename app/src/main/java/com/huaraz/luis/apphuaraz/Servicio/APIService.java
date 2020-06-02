@@ -112,9 +112,9 @@ public interface APIService {
                             @Field("tipo") int tipo);
    ////////////////////////////////////////
    ////////////////////////////////////////
-   //login del app de huaraz
+   //login del app
    @GET("usuario.php?")
-   Call<Usuario>  getlogin(@Query("dni") String dni);
+   Call<Usuario>  getlogin(@Query("dni") String dni,@Query("tipo") int tipo);
 
    //Registrar un usuarioi
 
