@@ -341,40 +341,67 @@ public class loginPet extends AppCompatActivity {
                         Log.d("Ingreso del servidor", "valor de peticion");
 
                         if(response.isSuccessful()) {
-                            per.setId_usuario(response.body().getId_usuario());
-                            per.setNombres(response.body().getNombres());
-                            per.setApellidos(response.body().getApellidos());
-                            per.setDni(response.body().getDni());
-                            per.setContrasena(response.body().getContrasena());
-                            per.setTipo(response.body().getTipo());
+                            System.out.println("Impresion de valor"+response.body().getApellidos());
+                            System.out.println("Impresion de valor"+response.body().getRespuesta());
+
+                            if(response.body().getRespuesta()==null){
+
+                                per.setId_usuario(response.body().getId_usuario());
+                                per.setNombres(response.body().getNombres());
+                                per.setApellidos(response.body().getApellidos());
+                                per.setDni(response.body().getDni());
+                                per.setContrasena(response.body().getContrasena());
+                                per.setTipo(response.body().getTipo());
 
 
-                            if((per.getContrasena().equals(contrasena))&&(1==per.getTipo())||(per.getContrasena().equals(contrasena))&&(3==per.getTipo())){
+                                if((per.getContrasena().equals(contrasena))&&(1==per.getTipo())||(per.getContrasena().equals(contrasena))&&(3==per.getTipo())){
 
 
-                                Global.usuario=(String.valueOf(per.getDni()));
-                                Global.nombre=per.getNombres();
-                                System.out.println("Global con internet"+Global.usuario);
+                                    Global.usuario=(String.valueOf(per.getDni()));
+                                    Global.nombre=per.getNombres();
+                                    System.out.println("Global con internet"+Global.usuario);
 
 
-                                Toast toast = new Toast(getApplicationContext());
+                                    Toast toast = new Toast(getApplicationContext());
 
-                                LayoutInflater inflater = getLayoutInflater();
-                                View layout = inflater.inflate(R.layout.toast_layout,
-                                        (ViewGroup) findViewById(R.id.lytLayout));
+                                    LayoutInflater inflater = getLayoutInflater();
+                                    View layout = inflater.inflate(R.layout.toast_layout,
+                                            (ViewGroup) findViewById(R.id.lytLayout));
 
-                                TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
-                                txtMsg.setText("Bienvenido :"+per.getNombres()+" "+per.getApellidos());
+                                    TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
+                                    txtMsg.setText("Bienvenido :"+per.getNombres()+" "+per.getApellidos());
 
-                                toast.setDuration(Toast.LENGTH_LONG);
-                                toast.setView(layout);
-                                toast.show();
-                                System.out.println("Bienvenido"+per.getNombres()+per.getApellidos());
+                                    toast.setDuration(Toast.LENGTH_LONG);
+                                    toast.setView(layout);
+                                    toast.show();
+                                    System.out.println("Bienvenido"+per.getNombres()+per.getApellidos());
 
-                                Intent in = new Intent(loginPet.this,MainActivity.class);
-                                in.putExtra("nombre",per.getNombres());
+                                    Intent in = new Intent(loginPet.this,MainActivity.class);
+                                    in.putExtra("nombre",per.getNombres());
 
-                                startActivity(in);
+                                    startActivity(in);
+
+                                }else{
+
+                                    Toast toast = new Toast(getApplicationContext());
+
+                                    LayoutInflater inflater = getLayoutInflater();
+                                    View layout = inflater.inflate(R.layout.toast_layout,
+                                            (ViewGroup) findViewById(R.id.lytLayout));
+
+                                    TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
+                                    txtMsg.setText("¡Contraseña Incorrecta! ");
+
+                                    toast.setDuration(Toast.LENGTH_LONG);
+                                    toast.setView(layout);
+                                    toast.show();
+
+
+
+                                }
+
+
+
 
                             }else{
 
@@ -385,15 +412,15 @@ public class loginPet extends AppCompatActivity {
                                         (ViewGroup) findViewById(R.id.lytLayout));
 
                                 TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
-                                txtMsg.setText("¡Contraseña Incorrecta! ");
+                                txtMsg.setText("¡Usuario o Contraseña Incorrecta! ");
 
                                 toast.setDuration(Toast.LENGTH_LONG);
                                 toast.setView(layout);
                                 toast.show();
-                                System.out.println("Se registro Usuario Tecnico");
 
 
                             }
+
 
 
 

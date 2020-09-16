@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AppHuarazPedro.iml" filepath="$PROJECT_DIR$/AppHuarazPedro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/AppHuarazPedro-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/AppHuarazPedro-app.iml" group="AppHuarazPedro/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DoctorVerde-AppHuarazPedro.iml" filepath="$PROJECT_DIR$/.idea/modules/DoctorVerde-AppHuarazPedro.iml" group="AppHuarazPedro" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
